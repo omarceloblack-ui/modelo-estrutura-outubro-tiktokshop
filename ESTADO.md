@@ -8,7 +8,8 @@
 - Cloudflare Pages e D1: nenhum recurso de produção conectado.
 - Administrador e remetente: não configurados.
 - Modo: `template`; operações reais bloqueadas.
-- Repositório previsto: `omarceloblack-ui/modelo-estrutura-outubro-tiktokshop`.
+- Repositório privado criado e marcado como template: `omarceloblack-ui/modelo-estrutura-outubro-tiktokshop`.
+- Testes locais: 20 aprovados; recursos e scripts conferidos.
 - Próximo passo: usar o prompt e completar os checklists.
 
 A loja original é outro projeto. Personalizações em andamento nela não devem ser consideradas publicadas porque uma cópia foi usada nesta matriz.
