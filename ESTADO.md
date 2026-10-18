@@ -19,3 +19,9 @@ Atualize este arquivo após cada etapa. Não registrar chaves, cookies, códigos
 ## Oferta atual
 
 Bloco Black Friday e desconto por quantidade removidos. Todas as unidades usam o preço base de exemplo; modo template preservado.
+
+## Sincronização visual — 18/10/2026
+
+Visual e navegação da loja de referência incorporados: oferta com título centralizado, cinco estrelas, aviso promocional único, feedbacks, seleção de cores com tags e botões rosas pulsantes, voltagem fixa informativa, checkout com etapas antes do carrinho, frete grátis desde a identificação e Sedex na entrega, rodapé claro sem caixas brancas e ícones alinhados. Localização aproximada por cidade via Cloudflare incluída.
+
+Identidade neutra, CNPJ/WhatsApp a configurar, e-mail fictício e preço de exemplo R$ 37,90 preservados. Nenhuma integração de produção foi copiada. Matriz permanece somente no GitHub, sem deploy Cloudflare.

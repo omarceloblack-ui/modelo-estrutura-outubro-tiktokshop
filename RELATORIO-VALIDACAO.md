@@ -22,3 +22,13 @@ Ao usar em uma nova loja, substituir este relatório por evidências, correçõe
 ## Remoção da promoção
 
 Banner, mensagens promocionais e desconto por quantidade removidos do seletor, checkout e servidor. Preço base e isolamento da matriz preservados.
+
+## Atualização visual — 18/10/2026
+
+- Componentes de vendas, seletor, pagamento, frete e rodapé sincronizados com a versão atual da loja de referência.
+- Dados específicos da loja substituídos por exemplos; configurações de produção, banco, chaves, domínio e produto não copiados.
+- Preço base de exemplo R$ 37,90, sem desconto por quantidade; servidor e navegador coerentes.
+- Endpoint de cidade usa apenas metadados Cloudflare, sem GPS, serviço externo ou cache compartilhado; fallback sem cidade.
+- Modo template continua bloqueando Pix e administração reais; rastreio de demonstração preservado.
+- Testes de servidor/mapa e verificação de recursos executados localmente. Prévia visual conferida; nenhum pagamento ou e-mail real realizado.
+- Publicação solicitada somente no GitHub. Integrações e ativação de outra loja continuam pendentes do briefing.

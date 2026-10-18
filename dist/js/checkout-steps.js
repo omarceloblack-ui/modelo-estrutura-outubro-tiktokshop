@@ -52,7 +52,7 @@
   function bind(){
     document.querySelectorAll('button').forEach(function(b){
       var t=(b.innerText||'').trim().toUpperCase();
-      if(t==='IR PARA A ENTREGA' && !b.dataset.lvw){ b.dataset.lvw='1'; b.addEventListener('click', function(e){
+      if(t==='CONTINUAR O PEDIDO' && !b.dataset.lvw){ b.dataset.lvw='1'; b.addEventListener('click', function(e){
         e.preventDefault();
         var nome=(document.querySelector('input[placeholder="Nome e Sobrenome"]')||{}).value||'';
         var email=(document.querySelector('input[placeholder="email@email.com"]')||{}).value||'';

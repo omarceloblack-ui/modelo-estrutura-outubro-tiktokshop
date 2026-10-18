@@ -17,9 +17,7 @@
   var selLbl=document.getElementById('lv-color-sel');
   var priceEl=document.getElementById('lv-color-price');
   var voltage='Bivolt';
-  document.querySelectorAll('#lv-voltage-grid [data-voltage]').forEach(function(button){
-    button.addEventListener('click',function(){voltage=button.dataset.voltage;update();});
-  });
+
   var QT=OPTS.map(function(){return 0;});
   function fmt(n){return n.toFixed(2).replace('.',',');}
   function totalQty(){return QT.reduce(function(a,b){return a+b;},0);}
@@ -34,8 +32,9 @@
       var img='<div style="position:relative"><img decoding="async" src="'+o.i+'" alt="'+o.l+'" onerror="this.style.visibility=\'hidden\'" style="width:100%;aspect-ratio:1;object-fit:contain;border-radius:8px;background:#fff'+(o.out?';filter:grayscale(1);opacity:.5':'')+'"/>'+
         (o.out?'<span style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);background:rgba(22,24,35,.82);color:#fff;font-size:9.5px;font-weight:800;letter-spacing:.14em;padding:4px 0">ESGOTADO</span>':'')+
         (active?'<span style="position:absolute;top:3px;right:3px;background:#fe2c55;color:#fff;font-size:10px;font-weight:800;min-width:17px;height:17px;line-height:17px;border-radius:99px">'+QT[idx]+'</span>':'')+'</div>';
-      var body='<div style="margin-top:5px;font-size:11.5px;font-weight:800;color:'+(o.out?'#a1a5ad':'#161823')+'">'+o.l+'</div>'+
-        '<div style="font-size:11.5px;font-weight:700;color:'+(active?'#fe2c55':'#8a8f98')+';margin-top:1px">R$ '+fmt(o.p)+'</div>';
+      var tagColor=idx===0?'#161823':idx===1?'#fff':'#f3b7cb';
+      var body='<span class="lv-color-tag" style="background:'+tagColor+';color:'+(idx===0?'#fff':'#161823')+'">'+o.l+'</span>'+
+        '<button type="button" class="lv-select" data-select aria-label="Selecionar escova '+nice(o.l)+'" aria-pressed="'+active+'" '+(o.out?'disabled':'')+'>'+(active?'SELECIONADO':'CLIQUE AQUI')+'</button>';
       var step=active?'<div style="margin-top:6px;border-top:1px dashed #f0d6de;padding-top:6px;display:flex;align-items:center;justify-content:space-between;gap:4px">'+
         '<button type="button" data-step="-1" style="width:24px;height:24px;border-radius:6px;border:1px solid #e6e8eb;background:#fff;font-size:15px;line-height:1;color:#161823">&minus;</button>'+
         '<span style="font-size:13px;font-weight:800;color:#161823">'+QT[idx]+'</span>'+
@@ -48,6 +47,7 @@
           var rm=ev.target.closest&&ev.target.closest('[data-remove]');
           if(rm&&QT[idx]>0){ ev.stopPropagation(); QT[idx]=0; update(); return; }
           if(b&&QT[idx]>0){ ev.stopPropagation(); QT[idx]=Math.min(10,Math.max(0,QT[idx]+parseInt(b.getAttribute('data-step'),10))); update(); return; }
+          if(!ev.target.closest('[data-select]'))return;
           if(QT[idx]===0){ QT[idx]=1; update(); return; }
           if(QT[idx]===1){ QT[idx]=0; update(); return; }
         });
@@ -59,25 +59,22 @@
     render();
     var c=chosen(),t=totalQty();
     var pricing=window.MB_PRICING(totalQty()),total=pricing.subtotal/100;
-    document.querySelectorAll('#lv-voltage-grid [data-voltage]').forEach(function(button){
-      button.setAttribute('aria-pressed',String(button.dataset.voltage===voltage));
-    });
     priceEl.textContent=fmt(total||PRICE);
     if(c.length){
       thumb.src=c[0].o.i;
       selLbl.innerHTML='Selecionado: <strong style="color:#161823">'+c.map(function(x){return nice(x.o.l)+' x'+x.q;}).join(' + ')+(voltage?' · '+voltage:'')+'</strong>';
       cta.disabled=!voltage;
       cta.style.background=voltage?'#fe2c55':'#d5d6d9';
-      cta.innerHTML=(voltage?'Comprar agora ('+t+' '+(t>1?'itens':'item')+')':'Selecione a voltagem')+'<span style="display:block;font-size:11.5px;font-weight:600;opacity:.9;margin-top:2px">Envio grátis</span>';
+      cta.textContent='CONTINUAR PEDIDO';
     }else{
       selLbl.innerHTML='Selecione: <strong style="color:#161823">uma ou mais cores</strong>';
       priceEl.textContent=fmt(PRICE);
       cta.disabled=true;
       cta.style.background='#d5d6d9';
-      cta.innerHTML='Selecione uma cor<span style="display:block;font-size:11.5px;font-weight:600;opacity:.9;margin-top:2px">Envio grátis</span>';
+      cta.textContent='CONTINUAR PEDIDO';
     }
   }
-  render();
+  update();
   function open(){modal.style.display='flex';document.body.style.overflow='hidden';}
   function close(){modal.style.display='none';document.body.style.overflow='';}
   document.getElementById('lv-color-close').addEventListener('click',close);

@@ -26,3 +26,13 @@ D1: `payment_attempts`, `orders`, `order_events`, `order_map_points`, `order_ema
 8. Remetente e administrador nas variáveis; banco e segredos exclusivos na Cloudflare.
 
 Preserve rotas e IDs usados pelos scripts ou atualize todas as referências e testes na mesma alteração. Não renomear `dist` sem ajustar hospedagem, prévia e verificador. Mantenha a origem e licenças das dependências livres.
+
+## Componentes visuais atuais
+
+Rodapé compartilhado no HTML de vendas e nas três etapas de pagamento, estilos em `dist/css/rodape.css`. Ícones de pagamento em SVG; logos de segurança são recursos ilustrativos e só devem ser exibidas em produção com uso e certificação verificados. Remover métodos indisponíveis ou identificá-los claramente.
+
+Seletor: faixa ESCOLHA SUA COR, tags por cor, CLIQUE AQUI com pulsação respeitando redução de movimento, quantidades e CONTINUAR PEDIDO. Bivolt é informativo, sem escolha de voltagem; adaptar se o novo produto exigir variantes elétricas.
+
+Checkout: etapas antes do carrinho; cartão verde de frete grátis na identificação; frete grátis e Sedex integrados ao carrinho da entrega. Quantidade, frete, total e sessão devem permanecer coerentes ao voltar etapas. Jadlog não aparece na interface; suporte legado no servidor não representa oferta ativa.
+
+`/api/location` consulta cidade aproximada brasileira de `request.cf`, sem cache compartilhado e sem armazenar IP. Não substitui CEP/endereço de entrega. Em prévia local ou cidade ausente, mostrar apenas Frete grátis.

@@ -9,22 +9,43 @@
   const savedCart = read(sessionStorage, 'checkoutCart', null);
   let colors = (savedCart?.colors || read(localStorage, 'coresSelecionadas', [])).map(c => ({ color: String(c.color || c.label || '').toLowerCase(), quantity: Number(c.quantity) })).filter(c => allowed.includes(c.color) && Number.isInteger(c.quantity) && c.quantity > 0 && c.quantity <= 10);
   if (!colors.length) colors = [{ color: 'preta', quantity: 1 }];
-  let shipping = ['free','jadlog','sedex'].includes(savedCart?.shipping) ? savedCart.shipping : 'free', busy = false, payment = null, pollTimer, clockTimer;
+  let shipping = ['free','sedex'].includes(savedCart?.shipping) ? savedCart.shipping : 'free', busy = false, payment = null, pollTimer, clockTimer;
   const tariffs = { free: 0, jadlog: 1847, sedex: 3340 };
   const names = { free: 'Frete Grátis', jadlog: 'JADLOG', sedex: 'Sedex - Correios Rápido' };
   const qty = () => colors.reduce((sum, c) => sum + c.quantity, 0);
   const subtotal = () => window.MB_PRICING(qty()).subtotal;
   const total = () => subtotal() + tariffs[shipping];
   const signature = () => JSON.stringify({ colors, shipping });
+
+  document.querySelectorAll('[id^="lv-step-"] main').forEach(main=>{
+    const sections=Array.from(main.children).filter(el=>el.tagName==='SECTION');
+    if(sections.length>1)main.insertBefore(sections[1],sections[0]);
+  });
+  const shippingTitle=Array.from(document.querySelectorAll('#lv-step-2 h4')).find(el=>el.textContent.includes('forma de entrega'));
+  if(shippingTitle){
+    const oldPanel=shippingTitle.parentElement.parentElement;
+    const panel=document.createElement('div');
+    panel.style.cssText='margin-top:16px;padding-top:16px;border-top:1px solid #eee';
+    panel.innerHTML='<h4 style="font-size:13px;font-weight:700;margin-bottom:10px">Escolha uma forma de entrega:</h4>'+[
+      ['free','🚚','Frete grátis','Chega em 10 dias','Grátis'],
+      ['sedex','📦','Sedex - Correios Rápido','Chega amanhã','R$ 33,40']
+    ].map(([id,icon,name,eta,price])=>'<button type="button" data-shipping="'+id+'" aria-pressed="false" class="mb-shipping"><span class="mb-shipping-dot"></span><span aria-hidden="true" style="font-size:22px">'+icon+'</span><span style="flex:1"><strong>'+name+'</strong><small style="display:block;margin-top:4px">'+eta+'</small></span><strong>'+price+'</strong></button>').join('');
+    const cart=document.querySelector('#lv-step-2 main > section:nth-child(2)');
+    cart.insertBefore(panel,cart.querySelector('hr'));oldPanel.remove();
+    const firstCart=document.querySelector('#lv-step-1 main > section:nth-child(2)');
+    if(firstCart){
+      const freePreview=panel.querySelector('[data-shipping="free"]').cloneNode(true);
+
+      freePreview.classList.add('mb-free-preview');
+      freePreview.setAttribute('aria-pressed','true');
+      freePreview.setAttribute('aria-label','Frete grátis, chega em 10 dias');
+      freePreview.style.marginTop='16px';
+      firstCart.insertBefore(freePreview,firstCart.querySelector('hr'));
+    }
+  }
+
   function draw() {
-    document.querySelectorAll('#lv-step-2 button').forEach(b => {
-      const alt = b.querySelector('img')?.alt || '';
-      if (!/frete|jadlog|sedex/i.test(alt)) return;
-      const choice = /jadlog/i.test(alt) ? 'jadlog' : /sedex/i.test(alt) ? 'sedex' : 'free';
-      const selected = choice === shipping;
-      b.className = 'w-full flex items-center gap-2.5 rounded-lg border-2 p-2.5 text-left transition ' + (selected ? 'border-emerald-600 bg-emerald-50' : 'border-neutral-200 bg-white');
-      const dot = b.querySelector('span'); if (dot) dot.innerHTML = selected ? '<span class="w-2 h-2 rounded-full bg-emerald-600"></span>' : '';
-    });
+    document.querySelectorAll('[data-shipping]').forEach(b=>{const selected=b.dataset.shipping===shipping;b.setAttribute('aria-pressed',String(selected));});
     const label = colors.map(c => c.color.charAt(0).toUpperCase() + c.color.slice(1) + ' x' + c.quantity).join(' + ');
     document.querySelectorAll('.border-neutral-200 > span').forEach(e => { if (/^\d+$/.test(e.textContent.trim())) e.textContent = String(qty()); });
     document.querySelectorAll('span.bg-neutral-900').forEach(e => { if (/^\d+$/.test(e.textContent.trim())) e.textContent = String(qty()); });
@@ -41,6 +62,7 @@
     for (const id of ['lv-pix-total','lv-pix-total-big','lv-pix-total-inline']) if ($(id)) $(id).textContent = fmt(total());
     if ($('lv-pix-frete')) $('lv-pix-frete').textContent = tariffs[shipping] ? fmt(tariffs[shipping]) : 'Grátis';
     if ($('lv-pix-frete-name')) $('lv-pix-frete-name').textContent = names[shipping];
+    if (document.getElementById('lv-eta-frete')) document.getElementById('lv-eta-frete').textContent=names[shipping];
     const days = { free: 10, jadlog: 5, sedex: 1 };
     const arrival = new Date(Date.now() + days[shipping] * 86400000).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
     document.querySelectorAll('[data-eta]').forEach(e => { e.textContent = arrival; });
@@ -135,15 +157,9 @@
     if (b.id === 'lv-pix-generate') { e.preventDefault(); generate(); return; }
     if (b.querySelector('svg.lucide-plus')) changeQty(1);
     if (b.querySelector('svg.lucide-minus')) changeQty(-1);
-    const alt = b.querySelector('img')?.alt || '';
-    if (b.closest('#lv-step-2') && /frete|jadlog|sedex/i.test(alt)) {
-      if (payment) { alert('Este pedido já tem um Pix gerado.'); return; }
-      shipping = /jadlog/i.test(alt) ? 'jadlog' : /sedex/i.test(alt) ? 'sedex' : 'free';
-      b.parentElement.querySelectorAll('button').forEach(other => {
-        const on = other === b;
-        other.className = 'w-full flex items-center gap-2.5 rounded-lg border-2 p-2.5 text-left transition ' + (on ? 'border-emerald-600 bg-emerald-50' : 'border-neutral-200 bg-white');
-        const dot = other.querySelector('span'); if (dot) dot.innerHTML = on ? '<span class="w-2 h-2 rounded-full bg-emerald-600"></span>' : '';
-      }); draw();
+    if(b.dataset.shipping){
+      if(payment){alert('Este pedido já tem um Pix gerado.');return;}
+      shipping=b.dataset.shipping;draw();
     }
   });
   $('lv-cep')?.addEventListener('input', e => { const d = e.target.value.replace(/\D/g,'').slice(0,8); e.target.value = d.length > 5 ? d.slice(0,5) + '-' + d.slice(5) : d; });

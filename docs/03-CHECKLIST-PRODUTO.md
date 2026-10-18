@@ -32,3 +32,11 @@
 - [ ] Preencher `loja.config.json` sem credenciais.
 - [ ] Apresentar resumo, cálculos e pendências.
 - [ ] Receber aprovação do resumo antes de implementar, conectar e publicar.
+
+## Conferir ao reutilizar o visual
+
+- [ ] Substituir CNPJ, WhatsApp, e-mail, horários, logo e direitos autorais no rodapé.
+- [ ] Validar selos/certificações e métodos de pagamento; remover afirmações não comprovadas.
+- [ ] Aprovar promoção diária, cronômetro, estoque, estrelas, vendas e feedbacks; remover elementos sem dados reais.
+- [ ] Confirmar frete gratuito, cobertura, Sedex, prazos e voltagem fixa do produto.
+- [ ] Substituir preço de exemplo de R$ 37,90 em todas as camadas e no produto Umbrella.

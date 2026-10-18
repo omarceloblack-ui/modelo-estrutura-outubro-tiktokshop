@@ -70,7 +70,7 @@
   document.addEventListener('click', function(e){
     var b=e.target && e.target.closest ? e.target.closest('button') : null;
     if(!b) return;
-    if((b.innerText||'').trim().toUpperCase()!=='IR PARA A ENTREGA') return;
+    if((b.innerText||'').trim().toUpperCase()!=='CONTINUAR O PEDIDO') return;
     var cpfEl=cpfInputs()[0], telEl=phoneInputs()[0], mailEl=emailInputs()[0];
     var d=onlyDigits(cpfEl&&cpfEl.value);
     var bad=null;

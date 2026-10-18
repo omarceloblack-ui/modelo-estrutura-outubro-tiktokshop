@@ -271,6 +271,11 @@ export function demoTracking(now=Date.now()) {
 async function handle(request, env) {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+  if(url.pathname==='/api/location' && request.method==='GET') {
+    const city=request.cf?.country==='BR' && typeof request.cf?.city==='string' ? request.cf.city.trim().slice(0,100) : null;
+    const response=json({city:city || null});response.headers.set('Cache-Control','private, no-store');return response;
+  }
+
   if (url.pathname.startsWith('/api/cep/') && request.method === 'GET') {
     const cep = url.pathname.slice('/api/cep/'.length);
     if (!/^\d{8}$/.test(cep)) return json({ message: 'Informe um CEP com 8 dígitos.' }, 400);

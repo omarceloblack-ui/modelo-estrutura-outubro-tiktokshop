@@ -2,7 +2,7 @@
   if (window.__supportWidgetLoaded) return;
   window.__supportWidgetLoaded = true;
 
-  var GREETING = 'Olá! 👋 Este é o assistente automático da Loja de exemplo. Posso ajudar você a escolher entre preta, branca e rosa e explicar o pagamento por Pix, a entrega e o rastreio. Qual é a sua dúvida?';
+  var GREETING = 'Olá! 👋 Este é o assistente automático Loja de exemplo. Posso ajudar você a escolher entre preta, branca e rosa e explicar o pagamento por Pix, a entrega e o rastreio. Qual é a sua dúvida?';
   var SUGGESTIONS = ['Quais cores posso escolher?', 'Como comprar com Pix?', 'Como acompanho meu pedido?'];
   var history = [];
   var busy = false;
