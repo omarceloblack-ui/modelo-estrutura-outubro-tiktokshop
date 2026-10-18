@@ -1,0 +1,43 @@
+{
+  "status": "rascunho",
+  "loja": {
+    "nome": null,
+    "slug": null,
+    "dominio": null,
+    "emailAdministrador": null,
+    "emailRemetente": null
+  },
+  "produto": {
+    "nome": null,
+    "marca": null,
+    "produtoUmbrellaId": null,
+    "precoCentavos": null,
+    "variantes": [],
+    "fotos": [],
+    "descricao": null
+  },
+  "oferta": {
+    "descontoPercentual": null,
+    "quantidadeMinima": null,
+    "frete": [],
+    "prazoDias": null,
+    "garantia": null,
+    "trocas": null
+  },
+  "identidade": {
+    "logo": null,
+    "corPrincipal": null,
+    "corSecundaria": null
+  },
+  "conteudo": {
+    "depoimentosReais": [],
+    "autorizacaoUsoMidias": false
+  },
+  "servicos": {
+    "repositorio": null,
+    "projetoCloudflare": null,
+    "bancoD1": null,
+    "dominioResendVerificado": false,
+    "webhookConfigurado": false
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "modelo-estrutura-outubro-tiktokshop",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node preview.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "check": "node verificar.cjs",
+    "preflight": "node scripts/preflight.cjs"
+  }
+}

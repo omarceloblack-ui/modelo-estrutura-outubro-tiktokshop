@@ -1,0 +1,1 @@
+(function(){var el=document.getElementById("lv-promo-date");if(!el)return;var parts=new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit"}).formatToParts(new Date());var day=parts.find(function(p){return p.type==="day"});var month=parts.find(function(p){return p.type==="month"});if(day&&month)el.textContent=day.value+"."+month.value;})();

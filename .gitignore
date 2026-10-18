@@ -1,0 +1,13 @@
+.git/
+.tooling/
+.wrangler/
+node_modules/
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+*.zip
+*.log
+*.sqlite*
+*.db
+secrets/

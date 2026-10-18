@@ -1,0 +1,10 @@
+{
+  "name": "modelo-estrutura-outubro-tiktokshop",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-10-18",
+  "vars": {
+    "STORE_MODE": "template",
+    "ORDER_FROM_EMAIL": "",
+    "ADMIN_EMAIL": ""
+  }
+}
