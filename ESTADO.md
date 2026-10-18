@@ -15,3 +15,7 @@
 A loja original é outro projeto. Personalizações em andamento nela não devem ser consideradas publicadas porque uma cópia foi usada nesta matriz.
 
 Atualize este arquivo após cada etapa. Não registrar chaves, cookies, códigos temporários ou dados pessoais.
+
+## Atualização visual Black Friday
+
+Banner do seletor com fundo preto, faixa vermelha, título branco e desconto vermelho ampliado. Preços e configurações de exemplo preservados.
