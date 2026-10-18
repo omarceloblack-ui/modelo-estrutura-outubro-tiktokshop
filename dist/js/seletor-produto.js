@@ -62,7 +62,7 @@
     document.querySelectorAll('#lv-voltage-grid [data-voltage]').forEach(function(button){
       button.setAttribute('aria-pressed',String(button.dataset.voltage===voltage));
     });
-    priceEl.textContent=fmt(total||PRICE);var offer=document.getElementById('mb-bundle-offer');if(offer){var detail=offer.querySelector('.mb-bf-detail');if(detail)detail.innerHTML=t>=2?'De R$ '+fmt(t*PRICE)+' por <strong>R$ '+fmt(total)+'</strong>. Economia de R$ '+fmt(pricing.discount/100)+'.':'2 escovas por <strong>R$ 53,06</strong>. Combine suas cores favoritas.';}
+    priceEl.textContent=fmt(total||PRICE);
     if(c.length){
       thumb.src=c[0].o.i;
       selLbl.innerHTML='Selecionado: <strong style="color:#161823">'+c.map(function(x){return nice(x.o.l)+' x'+x.q;}).join(' + ')+(voltage?' · '+voltage:'')+'</strong>';

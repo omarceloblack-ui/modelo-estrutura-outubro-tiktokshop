@@ -16,6 +16,6 @@ A loja original é outro projeto. Personalizações em andamento nela não devem
 
 Atualize este arquivo após cada etapa. Não registrar chaves, cookies, códigos temporários ou dados pessoais.
 
-## Atualização visual Black Friday
+## Oferta atual
 
-Banner do seletor com fundo preto, faixa vermelha, título branco e desconto vermelho ampliado. Preços e configurações de exemplo preservados.
+Bloco Black Friday e desconto por quantidade removidos. Todas as unidades usam o preço base de exemplo; modo template preservado.

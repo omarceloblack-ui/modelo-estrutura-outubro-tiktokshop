@@ -228,7 +228,7 @@ export function prepareOrder(body) {
   });
   const qty = colors.reduce((s, c) => s + c.quantity, 0);
   if (qty > 30) throw Error('O limite é de 30 unidades por pedido.');
-  const effectiveUnit=qty>=2?2653:UNIT;
+  const effectiveUnit=UNIT;
   if (!Object.hasOwn(SHIPPING, body.shipping)) throw Error('Selecione a entrega.');
   const address = { street: text(a.street), streetNumber: text(a.streetNumber, 30), complement: text(a.complement), neighborhood: text(a.neighborhood), city: text(a.city), state: text(a.state).toUpperCase(), zipCode: digits(a.zipCode), country: 'BR' };
   return { amount: effectiveUnit * qty + SHIPPING[body.shipping], currency: 'BRL', paymentMethod: 'PIX', installments: 1, traceable: true,

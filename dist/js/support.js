@@ -2,9 +2,8 @@
   if (window.__supportWidgetLoaded) return;
   window.__supportWidgetLoaded = true;
 
-  var GREETING =
-    'Olá! 👋 Este é o assistente automático Loja de exemplo. Escolha sua escova nas cores preta, branca ou rosa. Levando 2 ou mais, você ganha 30% de desconto: 2 por R$ 53,06. Quer combinar as cores ou saber como comprar?';
-  var SUGGESTIONS = ['Quero 2 com 30% de desconto', 'Quais cores posso combinar?', 'Como comprar com Pix?'];
+  var GREETING = 'Olá! 👋 Este é o assistente automático da Loja de exemplo. Posso ajudar você a escolher entre preta, branca e rosa e explicar o pagamento por Pix, a entrega e o rastreio. Qual é a sua dúvida?';
+  var SUGGESTIONS = ['Quais cores posso escolher?', 'Como comprar com Pix?', 'Como acompanho meu pedido?'];
   var history = [];
   var busy = false;
 
@@ -121,7 +120,7 @@
     var typing = bubble('assistant', '');
     typing.innerHTML = '<span class="sup-dots">•••</span>';
 
-    var t=text.toLowerCase();var reply=t.includes('rastreio')?'Após a confirmação do pagamento, você recebe por e-mail o código e o link para acompanhar seu pedido.':t.includes('prazo')||t.includes('chega')||t.includes('entrega')?'O prazo inicial é de até 15 dias após o pagamento. As atualizações ficam na página de acompanhamento. Para comprar, toque em Comprar agora e escolha suas cores.':t.includes('cor')?'Você pode escolher preta, branca ou rosa e misturar as cores. Selecione duas unidades no botão Comprar agora para receber 30% de desconto nos produtos.':t.includes('pix')||t.includes('pagar')||t.includes('comprar')?'Toque em Comprar agora, escolha as cores e a quantidade e preencha seus dados. O checkout gera o QR Code e o Pix copia e cola. Duas ou mais unidades recebem 30% de desconto automaticamente.':t.includes('desconto')||t.includes('2')||t.includes('duas')?'Sim! Duas escovas custam R$ 53,06 no total: R$ 26,53 cada, com 30% de desconto. Vale para duas ou mais unidades, inclusive de cores diferentes. Toque em Comprar agora para escolher.':'Posso ajudar com cores, desconto, Pix, entrega e rastreio. Para aproveitar, escolha 2 ou mais escovas e receba 30% de desconto nos produtos. Toque em Comprar agora para montar seu pedido.';
+    var t=text.toLowerCase();var reply=t.includes('rastreio')||t.includes('acompanho')?'Após a confirmação do pagamento, você recebe por e-mail o código e o link para acompanhar seu pedido.':t.includes('prazo')||t.includes('chega')||t.includes('entrega')?'O prazo inicial é de até 15 dias após o pagamento. Consulte as atualizações na página de acompanhamento.':t.includes('cor')?'Você pode escolher preta, branca ou rosa e combinar as cores no mesmo pedido. Toque em Comprar agora para selecionar.':t.includes('desconto')||t.includes('oferta')?'Não há desconto por quantidade ativo. O total corresponde ao preço unitário multiplicado pela quantidade, mais o frete selecionado.':t.includes('pix')||t.includes('pagar')||t.includes('comprar')?'Toque em Comprar agora, escolha as cores e a quantidade e preencha seus dados. O checkout gera o QR Code e o Pix copia e cola.':'Posso ajudar com cores, Pix, entrega e rastreio. Toque em Comprar agora para escolher o seu produto e conferir o total do pedido.';
     Promise.resolve({ok:true,json:function(){return Promise.resolve({reply:reply});}})
       .then(function (r) {
         return r.json().then(function (j) {

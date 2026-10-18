@@ -1,4 +1,4 @@
 (() => {
   'use strict';
-  window.MB_PRICING = quantity => {const unit=quantity>=2?2653:3790;return{unit,subtotal:unit*quantity,discount:(3790-unit)*quantity,discountPercent:quantity>=2?30:0};};
+  window.MB_PRICING = quantity => ({unit:3790,subtotal:3790*quantity,discount:0,discountPercent:0});
 })();

@@ -18,7 +18,7 @@ D1: `payment_attempts`, `orders`, `order_events`, `order_map_points`, `order_ema
 
 1. Marca, logo, favicon, metadados, chat e e-mails nas quatro páginas.
 2. Nome, fotos, variantes, detalhes e provas reais no HTML, seletor, checkout e worker.
-3. Preço e promoção em `pricing.js`, seletor, checkout e `prepareOrder()` no worker. O exemplo dá 30% em duas ou mais unidades; não manter sem aprovação.
+3. Preço e promoção em `pricing.js`, seletor, checkout e `prepareOrder()` no worker. O modelo não tem desconto ativo por quantidade; qualquer oferta futura exige aprovação e testes.
 4. Constantes `PRODUCT`, `UNIT`, preço por item e total no worker. Nunca reutilizar o produto de outra loja.
 5. Frete em `SHIPPING` e tarifas do checkout; prazo coerente com chat, e-mails e rastreio.
 6. Origem, transportadoras, etapas e dias: confirmar antes de manter São Paulo e cinco contatos em 15 dias.

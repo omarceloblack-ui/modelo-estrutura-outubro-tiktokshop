@@ -44,7 +44,6 @@
     const days = { free: 10, jadlog: 5, sedex: 1 };
     const arrival = new Date(Date.now() + days[shipping] * 86400000).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' });
     document.querySelectorAll('[data-eta]').forEach(e => { e.textContent = arrival; });
-    let promo=$('mb-checkout-discount');if(!promo){promo=document.createElement('p');promo.id='mb-checkout-discount';promo.style.cssText='font-size:13px;color:#c51f45;background:#fff0f4;padding:12px;border-radius:10px;margin:12px 0';const target=$('lv-step-2');if(target)target.prepend(promo);}if(promo){promo.hidden=qty()<2;promo.textContent='30% de desconto aplicado nos produtos: economia de '+fmt(window.MB_PRICING(qty()).discount)+'.';}
     save('checkoutCart', { colors, shipping });
   }
   function changeQty(delta) {

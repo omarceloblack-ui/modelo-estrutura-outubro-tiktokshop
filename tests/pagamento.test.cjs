@@ -13,7 +13,11 @@ class Database {
 function request(data, origin='https://loja.example') { return new Request('https://loja.example/api/pix',{method:'POST',headers:{Origin:origin,'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.1'},body:JSON.stringify(data)}); }
 test('calcula preços no servidor e ignora valores enviados pelo cliente', () => {
   const b = body(); b.amount = 1; b.colors = [{color:'preta',quantity:2},{color:'rosa',quantity:1}]; b.shipping='jadlog';
-  const order=worker.prepareOrder(b); assert.equal(order.amount,9806); assert.equal(order.items[0].unitPrice,2653); assert.equal(order.shipping.fee,1847);
+  const order=worker.prepareOrder(b); assert.equal(order.amount,13217); assert.equal(order.items[0].unitPrice,3790); assert.equal(order.shipping.fee,1847);
+});
+test('matriz mantém o preço unitário sem desconto para uma, duas e três unidades',()=>{
+  const vm=require('node:vm'),context={window:{}};vm.runInNewContext(fs.readFileSync('dist/js/pricing.js','utf8'),context);
+  for(const quantity of [1,2,3]){const b=body();b.colors=[{color:'preta',quantity}];const order=worker.prepareOrder(b),price=context.window.MB_PRICING(quantity);assert.equal(order.amount,3790*quantity);assert.equal(order.items[0].unitPrice,3790);assert.equal(price.subtotal,order.amount);assert.equal(price.discount,0);assert.equal(price.discountPercent,0);}
 });
 test('rejeita CPF, cor, quantidade, frete e endereço inválidos', () => {
   for(const mutate of [b=>b.customer.document='11111111111', b=>b.colors[0].color='azul', b=>b.colors[0].quantity=1.5, b=>b.colors[0].quantity=100, b=>b.shipping='barato',b=>b.address.state='XX']) { const b=body();mutate(b);assert.throws(()=>worker.prepareOrder(b)); }

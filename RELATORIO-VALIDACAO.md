@@ -19,6 +19,6 @@
 
 Ao usar em uma nova loja, substituir este relatório por evidências, correções, pendências e links do projeto correspondente, sem segredos nem dados pessoais.
 
-## Banner Black Friday
+## Remoção da promoção
 
-Visual incorporado do bloco aprovado: fundo preto, faixa vermelha, título branco e 30% OFF destacado. O texto de economia continua atualizado pela seleção. Nenhum preço, marca, banco ou segredo de produção foi transferido.
+Banner, mensagens promocionais e desconto por quantidade removidos do seletor, checkout e servidor. Preço base e isolamento da matriz preservados.
