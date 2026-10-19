@@ -85,6 +85,25 @@ export function buildOrderEmail(order, payment) {
   const html = `<div style="background:#f5f5f5;padding:24px;font-family:Arial,sans-serif;color:#161823"><div style="max-width:560px;margin:auto;background:white;border-radius:16px;overflow:hidden"><div style="padding:24px;background:#161823;color:white;font-size:22px;font-weight:bold">Loja de exemplo</div><div style="padding:24px"><h1 style="font-size:21px">${escapeHtml(status)}</h1><p>Olá, ${escapeHtml(order.customer.name)}!</p><p style="color:#71717a;font-size:12px">Pedido ${escapeHtml(payment.orderId)}</p><ul>${items.map(item => '<li style="margin:12px 0">' + escapeHtml(item) + '</li>').join('')}</ul><p>Frete: ${escapeHtml(money(order.shipping?.fee || 0))}</p><p style="font-size:20px;font-weight:bold">Total: ${escapeHtml(money(payment.amount))}</p><h2 style="font-size:16px">Endereço de entrega</h2><p>${escapeHtml(addressLine)}</p><h2 style="font-size:16px">${paid ? 'Pix do pedido' : 'Pague com Pix copia e cola'}</h2><p style="font-size:13px">Copie todo o código abaixo e cole na opção Pix do aplicativo do seu banco.</p><div style="padding:14px;background:#f4f4f5;border:1px solid #e4e4e7;border-radius:8px;word-break:break-all;font-family:monospace;font-size:12px">${escapeHtml(payment.copyPaste)}</div><p style="font-size:12px;color:#71717a">Validade: ${escapeHtml(expiration)} (Brasília).</p><p style="font-size:13px">${paid ? 'Pagamento confirmado pela operadora.' : '<strong>Aguardando pagamento.</strong> Este e-mail confirma o recebimento do pedido. A confirmação do pagamento ocorre após aprovação pela operadora.'}</p><a href="https://loja-exemplo.invalid/" style="display:inline-block;padding:12px 20px;background:#fe2c55;color:white;border-radius:8px;text-decoration:none">Visitar a loja</a></div></div></div>`;
   return { to: [order.customer.email], subject: 'Seu pedido GOKOCO foi recebido — ' + money(payment.amount), html, text: plain };
 }
+
+export function buildDeliveryEmail(row,details,title,note){
+  const link=SITE+'/rastreio?codigo='+encodeURIComponent(row.tracking_code);
+  const plain=title+'\nPedido: '+row.order_code+'\n'+note+'\nAcompanhe seu pedido: '+link;
+  return {to:[details.customer.email],subject:title+' — '+row.order_code,text:plain,html:'<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px;color:#172033"><h2>'+escapeHtml(title)+'</h2><p>Olá, '+escapeHtml(details.customer.name)+'.</p><p>'+escapeHtml(note)+'</p><p>Pedido: '+escapeHtml(row.order_code)+'</p><p><a style="display:inline-block;background:#fe2c55;color:white;padding:14px 20px;border-radius:8px;text-decoration:none" href="'+escapeHtml(link)+'">Acompanhar meu pedido</a></p><p>Consulte o histórico e as opções disponíveis no acompanhamento.</p></div>'};
+}
+async function deliveryMailStatement(env,row,key,title,note,eventId){
+  if(!hasEmail(env))return null;
+  await emailTable(env);
+  const details=await decryptEmail(env,row.details),payload=await encryptEmail(env,buildDeliveryEmail(row,details,title,note));
+  return env.PAYMENTS_DB.prepare("INSERT OR IGNORE INTO order_emails (order_id,payload,state,expires_at) SELECT ?,?,'pending',? WHERE EXISTS(SELECT 1 FROM order_events WHERE id=?)").bind(key,payload,Date.now()+86400000,eventId);
+}
+export async function retryPendingEmails(env){
+  if(!hasEmail(env))return [];
+  await emailTable(env);
+  const pending=await env.PAYMENTS_DB.prepare("SELECT order_id FROM order_emails WHERE state IN ('pending','sending') AND attempts<5 AND last_attempt<? ORDER BY last_attempt LIMIT 10").bind(Date.now()-120000).all();
+  const result=[];for(const row of pending.results||[])result.push({id:row.order_id,status:await deliverOrderEmail(env,row.order_id)});return result;
+}
+
 const hasEmail = env => Boolean(env.RESEND_API_KEY && env.ORDER_FROM_EMAIL && env.PAYMENTS_DB);
 async function emailTable(env) { await env.PAYMENTS_DB.prepare('CREATE TABLE IF NOT EXISTS order_emails (order_id TEXT PRIMARY KEY, payload TEXT, state TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0, last_attempt INTEGER NOT NULL DEFAULT 0, expires_at INTEGER NOT NULL, provider_id TEXT)').run(); }
 async function payloadKey(env) { const hash = await crypto.subtle.digest('SHA-256', encoder.encode('order-email:' + env.UMBRELLA_API_KEY)); return crypto.subtle.importKey('raw', hash, 'AES-GCM', false, ['encrypt','decrypt']); }
@@ -151,7 +170,7 @@ export async function saveOrder(env, order, payment) {
   const code = 'PED-' + new Date(created).toISOString().slice(0,10).replaceAll('-','') + '-' + crypto.randomUUID().slice(0,8).toUpperCase();
   const previous=await env.PAYMENTS_DB.prepare('SELECT details FROM orders WHERE id=?').bind(payment.orderId).first();
   const stored=previous?await decryptEmail(env,previous.details):{};
-  const detailsObject={customer:{name:stored.customer?.name||order.customer.name,email:stored.customer?.email||order.customer.email,phone:stored.customer?.phone||order.customer.phone||''},address:order.shipping?.address||order.customer.address||{},items:order.items,shippingFee:order.shipping?.fee??stored.shippingFee??0,copyPaste:payment.copyPaste||stored.copyPaste||'',expiresAt:payment.expiresAt,attribution:stored.attribution||orderAttribution(order),marketingContext:stored.marketingContext||order.marketingContext||null};
+  const detailsObject={customer:{name:stored.customer?.name||order.customer.name,email:stored.customer?.email||order.customer.email,phone:stored.customer?.phone||order.customer.phone||''},address:stored.deliveryAddress||order.shipping?.address||order.customer.address||{},deliveryAddress:stored.deliveryAddress||null,items:order.items,shippingFee:order.shipping?.fee??stored.shippingFee??0,copyPaste:payment.copyPaste||stored.copyPaste||'',expiresAt:payment.expiresAt,attribution:stored.attribution||orderAttribution(order),marketingContext:stored.marketingContext||order.marketingContext||null};
   const details=await encryptEmail(env,detailsObject);
   await env.PAYMENTS_DB.prepare('INSERT INTO orders (id,order_code,tracking_code,amount,payment_status,details,created_at,paid_at,stage,estimated_delivery,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET amount=excluded.amount, payment_status=excluded.payment_status, details=excluded.details, paid_at=COALESCE(orders.paid_at,excluded.paid_at), stage=CASE WHEN excluded.payment_status=\'PAID\' AND orders.stage=0 THEN 1 ELSE orders.stage END, estimated_delivery=COALESCE(orders.estimated_delivery,excluded.estimated_delivery), updated_at=excluded.updated_at').bind(payment.orderId,code,randomCode(),payment.amount,payment.status,details,created,paidAt,paid?1:0,paid?new Date(paidAt+15*86400000).toISOString().slice(0,10):null,now).run();
   if (paid) await env.PAYMENTS_DB.prepare("INSERT OR IGNORE INTO order_events (id,order_id,stage,note,location,occurred_at,source) VALUES (?,?,1,'Pagamento confirmado pela UmbrellaPag','',?,'provider')").bind('payment:' + payment.orderId,payment.orderId,paidAt).run();
@@ -164,6 +183,7 @@ export async function saveOrder(env, order, payment) {
   return row;
 }
 async function syncTransaction(env, data) {
+  if(await syncRedeliveryTransaction(env,data))return null;
   if (!matchesProduct(data) || !data.customer || !Array.isArray(data.items)) return null;
   if (!data.customer.name || !data.customer.email) {
     // A consulta individual da Umbrella pode omitir os contatos presentes na listagem.
@@ -219,40 +239,66 @@ async function adminRoutes(request,env,url) {
     const response=json({ok:true});response.headers.set('Set-Cookie','gokoco_admin='+payload+'.'+await adminDigest(env,payload)+'; Path=/api/admin; HttpOnly; Secure; SameSite=Strict; Max-Age=28800');return response;
   }
   if(!await adminSession(request,env))return json({message:'Faça login para acessar o painel.'},401);
+  if(url.pathname==='/api/admin/emails/test'&&request.method==='POST'){
+    const input=await request.json().catch(()=>({}));if(!/^[a-f0-9-]{36}$/i.test(input.testId||''))return json({message:'Identificador de teste inválido.'},400);
+    if(!await rateAdmin(env,'admin-email-test',3,600000))return json({message:'Aguarde antes de enviar outro teste.'},429);
+    const sample={order_code:'TESTE-EMAIL',tracking_code:'TESTE-GOKOCO'};
+    const message=buildDeliveryEmail(sample,{customer:{name:'Teste administrativo',email:env.ADMIN_EMAIL}},'TESTE — Pedido em transporte','Esta é uma simulação do e-mail automático de movimentação. Nenhum pedido real foi alterado e nenhuma cobrança foi gerada.');
+    const emailStatus=await queueEmailMessage(env,'admin-test/'+input.testId,message);return json({emailStatus});
+  }
+  if(url.pathname==='/api/admin/emails/retry'&&request.method==='POST')return json({results:await retryPendingEmails(env)});
+  if(url.pathname==='/api/admin/orders'&&request.method==='GET')await retryPendingEmails(env);
   if(url.pathname==='/api/admin/session')return json({email:env.ADMIN_EMAIL});
   if(url.pathname==='/api/admin/logout'&&request.method==='POST'){const response=json({ok:true});response.headers.set('Set-Cookie','gokoco_admin=; Path=/api/admin; HttpOnly; Secure; SameSite=Strict; Max-Age=0');return response;}
   if(url.pathname==='/api/admin/orders'&&request.method==='GET'){
     const page=Math.max(1,Math.min(100000,parseInt(url.searchParams.get('page')||'1')||1));
     const filter=url.searchParams.get('status')||'all';
-    const where=filter==='paid'?"WHERE payment_status='PAID'":filter==='pending'?"WHERE payment_status IN ('WAITING_PAYMENT','PROCESSING','AUTHORIZED')":'';
+    await deliveryTables(env);
+    const where=filter==='paid'?"WHERE payment_status='PAID'":filter==='pending'?"WHERE payment_status IN ('WAITING_PAYMENT','PROCESSING','AUTHORIZED')":['cancel_requested','redelivery_pending','failed'].includes(filter)?"WHERE id IN (SELECT order_id FROM delivery_state WHERE status='"+filter+"')":filter==='paid_review'?"WHERE id IN (SELECT order_id FROM redelivery_payments WHERE state='paid_review')":'';
     const rows=await env.PAYMENTS_DB.prepare('SELECT * FROM orders '+where+' ORDER BY created_at DESC LIMIT 25 OFFSET ?').bind((page-1)*25).all();
-    const result=[];for(const row of rows.results||[]){const details=await decryptEmail(env,row.details);result.push({...row,details:undefined,customer:details.customer,items:details.items,address:details.address,attribution:details.attribution||null});}
+    const result=[];for(const row of rows.results||[]){const details=await decryptEmail(env,row.details),delivery=await deliveryState(env,row);result.push({...row,details:undefined,customer:details.customer,items:details.items,address:details.address,attribution:details.attribution||null,deliveryStatus:delivery.status,deliveryCycle:delivery.cycle});}
+    await deliveryTables(env);
+    const fees=await env.PAYMENTS_DB.prepare("SELECT COALESCE(SUM(CASE WHEN state='paid' THEN 1000 ELSE 0 END),0) AS revenue FROM redelivery_payments").first();
     const stats=await env.PAYMENTS_DB.prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN payment_status='PAID' THEN 1 ELSE 0 END) AS paid, SUM(CASE WHEN payment_status IN ('WAITING_PAYMENT','PROCESSING','AUTHORIZED') THEN 1 ELSE 0 END) AS pending, SUM(CASE WHEN payment_status='PAID' THEN amount ELSE 0 END) AS revenue FROM orders").first();
-    return json({orders:result,stats,page,hasMore:result.length===25});
+    return json({orders:result,stats:{...stats,redeliveryRevenue:fees.revenue},page,hasMore:result.length===25});
   }
   if(url.pathname==='/api/admin/sync'&&request.method==='POST'){
     const data=await request.json().catch(()=>({}));const page=Math.max(1,Math.min(100,parseInt(data.page)||1));
     const list=await upstream(env,'/user/transactions?limit=10&page='+page);
-    let synced=0;for(const transaction of list.data||[]){if(matchesProduct(transaction)){const full=await upstream(env,'/user/transactions/'+encodeURIComponent(transaction.id));if(await syncTransaction(env,{...full,customer:{...transaction.customer,...full.customer}}))synced++;}}
+    let synced=0;for(const transaction of list.data||[]){if(matchesProduct(transaction)||env.REDELIVERY_PRODUCT_ID&&transaction.items?.some(item=>item.externalRef===env.REDELIVERY_PRODUCT_ID)){const full=await upstream(env,'/user/transactions/'+encodeURIComponent(transaction.id));if(await syncTransaction(env,{...full,customer:{...transaction.customer,...full.customer}}))synced++;}}
     return json({synced,page,hasMore:page<Number(list.pages||0)});
+  }
+  const attemptMatch=url.pathname.match(/^\/api\/admin\/orders\/([\w-]{1,80})\/attempt$/);
+  if(attemptMatch&&request.method==='POST'){
+    const row=await env.PAYMENTS_DB.prepare('SELECT * FROM orders WHERE id=?').bind(attemptMatch[1]).first();
+    if(!row)return json({message:'Pedido não encontrado.'},404);
+    return recordDeliveryAttempt(env,row,await request.json().catch(()=>({})));
   }
   const match=url.pathname.match(/^\/api\/admin\/orders\/([\w-]{1,80})(\/route)?$/);
   if(match){
     const row=await env.PAYMENTS_DB.prepare('SELECT * FROM orders WHERE id=?').bind(match[1]).first();if(!row)return json({message:'Pedido não encontrado.'},404);
     if(match[2]&&request.method==='POST'){
       if(row.payment_status!=='PAID')return json({message:'O pedido ainda não tem pagamento confirmado.'},409);
+      const delivery=await deliveryState(env,row);if(row.stage===5||delivery.status!=='active')return json({message:'Entrega concluída ou com solicitação pendente. Confira o histórico antes de alterar.'},409);
       const data=await request.json().catch(()=>({}));const stage=Number(data.stage),note=text(data.note,1500),location=text(data.location,120),occurredAt=Date.parse(data.occurredAt||'')||Date.now();
       if(!Number.isInteger(stage)||stage<1||stage>5||!note||occurredAt>Date.now()+300000||occurredAt<(row.paid_at||row.created_at))return json({message:'Confira a etapa, a descrição e a data da movimentação.'},400);
       const estimated=text(data.estimatedDelivery,10);if(estimated&&!/^\d{4}-\d{2}-\d{2}$/.test(estimated))return json({message:'Previsão de entrega inválida.'},400);
       let point;try{point=validateMapPoint(data);}catch(error){return json({message:error.message},400);}
-      const eventId=crypto.randomUUID();
-      const statements=[env.PAYMENTS_DB.prepare('UPDATE orders SET stage=?,carrier=?,carrier_code=?,estimated_delivery=?,updated_at=? WHERE id=?').bind(stage,text(data.carrier,120),text(data.carrierCode,120),estimated||row.estimated_delivery,Date.now(),row.id),env.PAYMENTS_DB.prepare("INSERT INTO order_events (id,order_id,stage,note,location,occurred_at,source) VALUES (?,?,?,?,?,?,'manual')").bind(eventId,row.id,stage,note,location,occurredAt)];
-      if(point)statements.push(env.PAYMENTS_DB.prepare('INSERT INTO order_map_points (event_id,city,state,latitude,longitude) VALUES (?,?,?,?,?)').bind(eventId,point.city,point.state,point.latitude,point.longitude));
-      await env.PAYMENTS_DB.batch(statements);
-      return json({ok:true});
+      const eventId=crypto.randomUUID(),mutationTime=Date.now();
+      const mailKey='delivery/'+row.id+'/'+delivery.cycle+'/'+stage;
+      const mail=await deliveryMailStatement(env,row,mailKey,['','Pedido confirmado','Pedido em preparação','Pedido coletado pela transportadora','Pedido em transporte','Pedido entregue'][stage],note,eventId);
+      const statements=[env.PAYMENTS_DB.prepare("UPDATE orders SET stage=?,carrier=?,carrier_code=?,estimated_delivery=?,updated_at=? WHERE id=? AND stage<5 AND EXISTS(SELECT 1 FROM delivery_state WHERE order_id=? AND cycle=? AND status='active')").bind(stage,text(data.carrier,120),text(data.carrierCode,120),estimated||row.estimated_delivery,mutationTime,row.id,row.id,delivery.cycle),env.PAYMENTS_DB.prepare("INSERT INTO order_events (id,order_id,stage,note,location,occurred_at,source) SELECT ?,?,?,?,?,?,'manual' WHERE EXISTS(SELECT 1 FROM orders WHERE id=? AND updated_at=? AND stage=?)").bind(eventId,row.id,stage,note,location,occurredAt,row.id,mutationTime,stage)];
+      if(point)statements.push(env.PAYMENTS_DB.prepare('INSERT INTO order_map_points (event_id,city,state,latitude,longitude) SELECT ?,?,?,?,? WHERE EXISTS(SELECT 1 FROM order_events WHERE id=?)').bind(eventId,point.city,point.state,point.latitude,point.longitude,eventId));
+      if(mail)statements.push(mail);
+      const result=await env.PAYMENTS_DB.batch(statements);
+      if(!result[0].meta?.changes)return json({message:'O pedido mudou. Atualize o painel.'},409);
+      const emailStatus=mail?await deliverOrderEmail(env,mailKey):'not_configured';
+      return json({ok:true,emailStatus});
     }
+    await emailTable(env);await deliveryTables(env);
+    const mails=await env.PAYMENTS_DB.prepare("SELECT order_id,state,attempts,last_attempt,expires_at FROM order_emails WHERE order_id=? OR order_id=? OR order_id LIKE ? OR order_id LIKE ? OR order_id IN (SELECT 'redelivery-paid/'||transaction_id FROM redelivery_payments WHERE order_id=?) ORDER BY last_attempt DESC").bind(row.id,'paid/'+row.id,'delivery/'+row.id+'/%','attempt/'+row.id+'/%',row.id).all();
     const details=await decryptEmail(env,row.details),events=await env.PAYMENTS_DB.prepare('SELECT e.stage,e.note,e.location,e.occurred_at,e.source,p.city,p.state,p.latitude,p.longitude FROM order_events e LEFT JOIN order_map_points p ON p.event_id=e.id WHERE e.order_id=? ORDER BY e.occurred_at DESC,e.rowid DESC').bind(row.id).all();
-    return json({order:{...row,details:undefined,...details},events:events.results||[]});
+    return json({order:{...row,details:undefined,...details,delivery:await deliverySummary(env,row)},events:events.results||[],emails:mails.results||[]});
   }
   return json({message:'Não encontrado.'},404);
 }
@@ -332,6 +378,146 @@ export function demoTracking(now=Date.now()) {
   const day=86400000,paidAt=now-6*day;
   return {demo:true,orderCode:'PED-DEMONSTRACAO',trackingCode:'TESTE-GOKOCO',paymentStatus:'PAID',amount:1000,customer:{name:'Cliente de demonstração'},address:{city:'Recife',state:'PE'},items:[{title:'Escova Modeladora GOKOCO — preta · Bivolt',quantity:1,unitPrice:1000}],paidAt,stage:3,carrier:'Transportadora fictícia — demonstração',carrierCode:'DEMO-001',estimatedDelivery:new Date(paidAt+15*day).toISOString().slice(0,10),stages:STAGES.map((title,i)=>({title,from:i*3+1,to:(i+1)*3})),events:[{stage:3,note:'Exemplo fictício de coleta confirmada. Nenhuma encomenda real está em transporte.',location:'Campinas / SP',occurred_at:paidAt+5*day,source:'manual',city:'Campinas',state:'SP',latitude:-22.9056,longitude:-47.0608},{stage:2,note:'Exemplo fictício de pedido em preparação.',location:'São Paulo / SP',occurred_at:paidAt+2*day,source:'manual',city:'São Paulo',state:'SP',latitude:-23.5505,longitude:-46.6333},{stage:1,note:'Pagamento simulado exclusivamente para demonstrar o rastreio.',location:'',occurred_at:paidAt,source:'provider',city:null,state:null,latitude:null,longitude:null}]};
 }
+const REDELIVERY_AMOUNT=1000;
+const REDELIVERY_REASONS={absent:'Destinatário ausente',address:'Endereço incompleto ou incorreto',access:'Acesso ao endereço indisponível',carrier:'Problema da transportadora',other:'Outro motivo confirmado'};
+async function deliveryTables(env){
+  for(const sql of [
+    "CREATE TABLE IF NOT EXISTS delivery_state (order_id TEXT PRIMARY KEY,cycle INTEGER NOT NULL DEFAULT 1,cycle_started_at INTEGER NOT NULL,status TEXT NOT NULL DEFAULT 'active',fee_allowed INTEGER NOT NULL DEFAULT 0,updated_at INTEGER NOT NULL)",
+    'CREATE TABLE IF NOT EXISTS delivery_attempts (id TEXT PRIMARY KEY,order_id TEXT NOT NULL,cycle INTEGER NOT NULL,number INTEGER NOT NULL,reason TEXT NOT NULL,note TEXT NOT NULL,location TEXT NOT NULL,occurred_at INTEGER NOT NULL,UNIQUE(order_id,cycle,number))',
+    'CREATE TABLE IF NOT EXISTS redelivery_payments (id TEXT PRIMARY KEY,order_id TEXT NOT NULL,cycle INTEGER NOT NULL,transaction_id TEXT UNIQUE,state TEXT NOT NULL,result TEXT,address TEXT,created_at INTEGER NOT NULL,paid_at INTEGER,UNIQUE(order_id,cycle))'
+  ])await env.PAYMENTS_DB.prepare(sql).run();
+}
+async function deliveryState(env,row){
+  await deliveryTables(env);await env.PAYMENTS_DB.prepare("INSERT OR IGNORE INTO delivery_state (order_id,cycle_started_at,updated_at) VALUES (?,?,?)").bind(row.id,row.paid_at||row.created_at,Date.now()).run();
+  return env.PAYMENTS_DB.prepare('SELECT * FROM delivery_state WHERE order_id=?').bind(row.id).first();
+}
+async function deliverySummary(env,row){
+  const state=await deliveryState(env,row),attempts=await env.PAYMENTS_DB.prepare('SELECT number,reason,note,location,occurred_at FROM delivery_attempts WHERE order_id=? AND cycle=? ORDER BY number').bind(row.id,state.cycle).all();
+  const fees=await env.PAYMENTS_DB.prepare('SELECT id,cycle,state,transaction_id,created_at,paid_at FROM redelivery_payments WHERE order_id=? ORDER BY cycle').bind(row.id).all();
+  return {cycle:state.cycle,cycleStartedAt:state.cycle_started_at,status:state.status,feeAllowed:!!state.fee_allowed,feeAmount:REDELIVERY_AMOUNT,attempts:attempts.results||[],fees:fees.results||[]};
+}
+export async function recordDeliveryAttempt(env,row,data){
+  const state=await deliveryState(env,row),number=Number(data.number),date=Date.parse(data.occurredAt||''),id=String(data.actionId||'');
+  if(row.payment_status!=='PAID'||row.stage!==4||state.status!=='active')return json({message:'Tentativas exigem pedido pago, em transporte e sem solicitação em aberto.'},409);
+  if(!/^[a-f0-9-]{36}$/i.test(id)||!Number.isInteger(number)||number<1||number>3||!REDELIVERY_REASONS[data.reason]||!text(data.note,1500)||!text(data.location,120)||data.carrierConfirmed!==true||!Number.isFinite(date)||date<state.cycle_started_at||date>Date.now()+300000)return json({message:'Preencha data, local, motivo e observação e confirme o contato com a transportadora.'},400);
+  const existing=await env.PAYMENTS_DB.prepare('SELECT * FROM delivery_attempts WHERE id=?').bind(id).first();
+  if(existing)return existing.order_id===row.id&&existing.cycle===state.cycle?json({ok:true,repeated:true}):json({message:'Identificador inválido.'},409);
+  const prior=await env.PAYMENTS_DB.prepare('SELECT MAX(number) AS last,MAX(occurred_at) AS date FROM delivery_attempts WHERE order_id=? AND cycle=?').bind(row.id,state.cycle).first();
+  if(number!==Number(prior.last||0)+1||date<Number(prior.date||0))return json({message:'Registre as tentativas na ordem 1, 2 e 3, com datas em sequência.'},409);
+  const faults=await env.PAYMENTS_DB.prepare("SELECT COUNT(*) AS n FROM delivery_attempts WHERE order_id=? AND cycle=? AND reason IN ('carrier','other')").bind(row.id,state.cycle).first();
+  const feeAllowed=number===3&&data.feeAuthorized===true&&!faults.n&&!['carrier','other'].includes(data.reason);
+  const mailKey='attempt/'+row.id+'/'+state.cycle+'/'+number;
+  const mail=await deliveryMailStatement(env,row,mailKey,number===3?'Três tentativas de entrega sem sucesso':number+'ª tentativa de entrega sem sucesso',REDELIVERY_REASONS[data.reason]+'. '+text(data.note,1500)+(number===3?' Consulte as opções de atendimento, cancelamento solicitado e eventual reentrega no acompanhamento.':''),'attempt:'+id);
+  try{const results=await env.PAYMENTS_DB.batch([
+    env.PAYMENTS_DB.prepare("INSERT INTO delivery_attempts (id,order_id,cycle,number,reason,note,location,occurred_at) SELECT ?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM orders o JOIN delivery_state d ON d.order_id=o.id WHERE o.id=? AND o.payment_status='PAID' AND o.stage=4 AND d.cycle=? AND d.status='active') AND (SELECT COUNT(*) FROM delivery_attempts WHERE order_id=? AND cycle=?)=?").bind(id,row.id,state.cycle,number,data.reason,text(data.note,1500),text(data.location,120),date,row.id,state.cycle,row.id,state.cycle,number-1),
+    env.PAYMENTS_DB.prepare("INSERT INTO order_events (id,order_id,stage,note,location,occurred_at,source) SELECT ?,?,4,?,?,?,'attempt' WHERE EXISTS(SELECT 1 FROM delivery_attempts WHERE id=?)").bind('attempt:'+id,row.id,`Ciclo ${state.cycle} · ${number}ª tentativa sem sucesso — ${REDELIVERY_REASONS[data.reason]}. ${text(data.note,1500)}`,text(data.location,120),date,id),
+    env.PAYMENTS_DB.prepare('UPDATE delivery_state SET status=?,fee_allowed=?,updated_at=? WHERE order_id=? AND cycle=? AND EXISTS(SELECT 1 FROM delivery_attempts WHERE id=?)').bind(number===3?'failed':'active',feeAllowed?1:0,Date.now(),row.id,state.cycle,id),...(mail?[mail]:[])
+  ]);if(!results[0].meta?.changes)return json({message:'O pedido mudou. Atualize o painel antes de continuar.'},409);}catch{return json({message:'A tentativa já foi registrada ou o pedido mudou. Atualize o painel.'},409);}
+  return json({ok:true,emailStatus:mail?await deliverOrderEmail(env,mailKey):'not_configured',delivery:await deliverySummary(env,row)});
+}
+export async function syncRedeliveryTransaction(env,data){
+  await deliveryTables(env);
+  let fee=await env.PAYMENTS_DB.prepare('SELECT * FROM redelivery_payments WHERE transaction_id=?').bind(String(data.id||'')).first();
+  if(!fee){let metadata;try{metadata=typeof data.metadata==='string'?JSON.parse(data.metadata):data.metadata;}catch{}
+    if(metadata?.kind==='redelivery'&&/^[a-f0-9-]{36}$/i.test(metadata.attemptId||'')){
+      const candidate=await env.PAYMENTS_DB.prepare('SELECT * FROM redelivery_payments WHERE id=? AND order_id=? AND cycle=?').bind(metadata.attemptId,metadata.orderId,Number(metadata.cycle)).first();
+      if(candidate&&!candidate.transaction_id)fee=candidate;
+    }
+  }
+  if(!fee)return null;
+  const product=env.REDELIVERY_PRODUCT_ID;
+  if(Number(data.amount)!==REDELIVERY_AMOUNT||data.paymentMethod&&data.paymentMethod!=='PIX'||!data.items?.some(item=>item.externalRef===product))throw Error('Pagamento de reentrega incompatível.');
+  await env.PAYMENTS_DB.prepare('UPDATE redelivery_payments SET transaction_id=COALESCE(transaction_id,?) WHERE id=?').bind(data.id,fee.id).run();
+  if(fee.state==='paid'||fee.state==='paid_review'){if(fee.state==='paid')await deliverOrderEmail(env,'redelivery-paid/'+data.id).catch(()=>null);return {handled:true,paid:true,review:fee.state==='paid_review'};}
+  if(data.status!=='PAID'){
+    if(['REFUSED','CANCELED','CANCELLED','EXPIRED'].includes(data.status)){
+      await env.PAYMENTS_DB.batch([
+        env.PAYMENTS_DB.prepare('UPDATE redelivery_payments SET state=? WHERE id=? AND state NOT IN (\'paid\',\'paid_review\')').bind('closed',fee.id),
+        env.PAYMENTS_DB.prepare("UPDATE delivery_state SET status='failed',updated_at=? WHERE order_id=? AND cycle=? AND status='redelivery_pending'").bind(Date.now(),fee.order_id,fee.cycle)
+      ]);
+    }
+    return {handled:true,paid:false};
+  }
+  const row=await env.PAYMENTS_DB.prepare('SELECT * FROM orders WHERE id=?').bind(fee.order_id).first(),state=await deliveryState(env,row);
+  if(state.cycle!==fee.cycle||!['failed','redelivery_pending'].includes(state.status)){
+    await env.PAYMENTS_DB.prepare("UPDATE redelivery_payments SET state='paid_review',paid_at=? WHERE id=? AND state!='paid'").bind(Date.now(),fee.id).run();return {handled:true,paid:true,review:true};
+  }
+  const paidAt=Date.parse(data.paidAt||'')||Date.now(),details=await decryptEmail(env,row.details),address=await decryptEmail(env,fee.address);
+  details.address=address;details.deliveryAddress=address;
+  const encrypted=await encryptEmail(env,details),estimated=new Date(paidAt+15*86400000).toISOString().slice(0,10);
+  const mailKey='redelivery-paid/'+data.id;
+  const mail=await deliveryMailStatement(env,row,mailKey,'Reentrega confirmada',`Sua taxa de reentrega de R$ 10,00 foi confirmada. O ciclo ${fee.cycle+1} começou com nova previsão de até 15 dias.`,'redelivery:'+data.id);
+  // Conditional writes and the unique payment event keep repeated webhooks idempotent.
+  await env.PAYMENTS_DB.batch([
+    env.PAYMENTS_DB.prepare("UPDATE orders SET stage=1,details=?,estimated_delivery=?,carrier_code='',updated_at=? WHERE id=? AND EXISTS(SELECT 1 FROM delivery_state WHERE order_id=? AND cycle=? AND status IN ('failed','redelivery_pending')) AND EXISTS(SELECT 1 FROM redelivery_payments WHERE id=? AND state NOT IN ('paid','paid_review'))").bind(encrypted,estimated,Date.now(),row.id,row.id,fee.cycle,fee.id),
+    env.PAYMENTS_DB.prepare("UPDATE delivery_state SET cycle=cycle+1,cycle_started_at=?,status='active',fee_allowed=0,updated_at=? WHERE order_id=? AND cycle=? AND status IN ('failed','redelivery_pending') AND EXISTS(SELECT 1 FROM redelivery_payments WHERE id=? AND state NOT IN ('paid','paid_review'))").bind(paidAt,Date.now(),row.id,fee.cycle,fee.id),
+    env.PAYMENTS_DB.prepare("INSERT OR IGNORE INTO order_events (id,order_id,stage,note,location,occurred_at,source) SELECT ?,?,1,?,'',?,'redelivery' WHERE EXISTS(SELECT 1 FROM delivery_state WHERE order_id=? AND cycle=? AND status='active')").bind('redelivery:'+data.id,row.id,`Reentrega paga — ciclo ${fee.cycle+1} iniciado. Nova previsão de até 15 dias.`,paidAt,row.id,fee.cycle+1),
+    env.PAYMENTS_DB.prepare("UPDATE redelivery_payments SET state=CASE WHEN EXISTS(SELECT 1 FROM delivery_state WHERE order_id=? AND cycle=? AND status='active') THEN 'paid' ELSE 'paid_review' END,paid_at=? WHERE id=? AND state NOT IN ('paid','paid_review')").bind(row.id,fee.cycle+1,paidAt,fee.id),...(mail?[mail]:[])
+  ]);
+  const applied=await env.PAYMENTS_DB.prepare('SELECT state FROM redelivery_payments WHERE id=?').bind(fee.id).first();
+  if(applied.state==='paid_review')return {handled:true,paid:true,review:true};
+  if(mail)await deliverOrderEmail(env,mailKey).catch(()=>null);
+  return {handled:true,paid:true,cycle:fee.cycle+1};
+}
+async function publicDeliveryRow(env,code){
+  if(!/^GKC-[A-F0-9]{32}$/.test(String(code||'')))return null;
+  await orderTables(env);return env.PAYMENTS_DB.prepare('SELECT * FROM orders WHERE tracking_code=?').bind(code).first();
+}
+async function redeliveryRoutes(request,env,url){
+  const body=request.method==='POST'?await request.json().catch(()=>({})):{};
+  const code=String(body.code||url.searchParams.get('code')||'').toUpperCase(),row=await publicDeliveryRow(env,code);
+  if(!row)return json({message:'Confira o código privado de acompanhamento.'},404);
+  if(row.payment_status!=='PAID')return json({message:'Este pedido ainda não tem pagamento confirmado.'},409);
+  let state=await deliveryState(env,row),fee=await env.PAYMENTS_DB.prepare('SELECT * FROM redelivery_payments WHERE order_id=? AND cycle=?').bind(row.id,state.cycle).first();
+  if(url.pathname==='/api/redelivery/status'&&request.method==='GET'){
+    if(!fee)return json({delivery:await deliverySummary(env,row),payment:null});
+    if(fee.transaction_id&&!['paid','paid_review','closed'].includes(fee.state))await syncRedeliveryTransaction(env,await upstream(env,'/user/transactions/'+encodeURIComponent(fee.transaction_id)));
+    fee=await env.PAYMENTS_DB.prepare('SELECT * FROM redelivery_payments WHERE id=?').bind(fee.id).first();
+    const payment=fee.result?await decryptEmail(env,fee.result):null;
+    return json({delivery:await deliverySummary(env,row),payment:payment?{...payment,paid:fee.state==='paid',review:fee.state==='paid_review',closed:fee.state==='closed'}:null});
+  }
+  if(request.method!=='POST')return json({message:'Não encontrado.'},404);
+  if(!['failed','redelivery_pending'].includes(state.status))return json({message:'Esta opção não está disponível neste momento.'},409);
+  if(body.action==='cancel'){
+    if(fee&&['creating','uncertain','ready'].includes(fee.state))return json({message:'Há uma solicitação de Pix em andamento. Confira o pagamento com a loja antes de solicitar cancelamento.'},409);
+    const changed=await env.PAYMENTS_DB.prepare("UPDATE delivery_state SET status='cancel_requested',updated_at=? WHERE order_id=? AND cycle=? AND status='failed'").bind(Date.now(),row.id,state.cycle).run();
+    if(changed.meta?.changes)await env.PAYMENTS_DB.prepare("INSERT INTO order_events (id,order_id,stage,note,location,occurred_at,source) VALUES (?,?,?,'Cliente solicitou cancelamento. A loja analisará a solicitação e o eventual reembolso.','',?,'customer')").bind(crypto.randomUUID(),row.id,row.stage,Date.now()).run();
+    return json({ok:true,message:'Solicitação de cancelamento enviada à loja. Isso não confirma estorno automático.'});
+  }
+  if(body.action!=='redelivery')return json({message:'Escolha uma opção válida.'},400);
+  if(!state.fee_allowed)return json({message:'Entre em contato com a loja para resolver esta entrega sem cobrança automática.'},409);
+  if(fee){
+    if(fee.state==='ready'&&fee.result)return json({...await decryptEmail(env,fee.result),repeated:true});
+    return json({message:'Esta taxa já foi solicitada. Acompanhe o status ou fale com a loja; nenhum segundo Pix será criado.'},409);
+  }
+  if(body.consent!==true)return json({message:'Confirme a taxa opcional de R$ 10,00 e o novo prazo estimado.'},400);
+  if(!env.REDELIVERY_PRODUCT_ID)return json({message:'A reentrega ainda não está configurada.'},503);
+  const details=await decryptEmail(env,row.details);let validated;
+  try{validated=prepareOrder({customer:{...details.customer,document:body.document,phone:details.customer.phone||body.phone},address:body.address,colors:[{color:'preta',quantity:1}],shipping:'free'});}catch(error){return json({message:error.message},400);}
+  const id=crypto.randomUUID(),encryptedAddress=await encryptEmail(env,validated.shipping.address);
+  try{
+    const results=await env.PAYMENTS_DB.batch([
+      env.PAYMENTS_DB.prepare("INSERT INTO redelivery_payments (id,order_id,cycle,state,address,created_at) SELECT ?,?,?,'creating',?,? WHERE EXISTS(SELECT 1 FROM delivery_state WHERE order_id=? AND cycle=? AND status='failed' AND fee_allowed=1)").bind(id,row.id,state.cycle,encryptedAddress,Date.now(),row.id,state.cycle),
+      env.PAYMENTS_DB.prepare("UPDATE delivery_state SET status='redelivery_pending',updated_at=? WHERE order_id=? AND cycle=? AND status='failed' AND EXISTS(SELECT 1 FROM redelivery_payments WHERE id=?)").bind(Date.now(),row.id,state.cycle,id)
+    ]);
+    if(!results[0].meta?.changes||!results[1].meta?.changes)return json({message:'O pedido mudou. Atualize o rastreio antes de continuar.'},409);
+  }catch{return json({message:'Outra solicitação já está em andamento. Atualize o rastreio.'},409);}
+  const order={amount:REDELIVERY_AMOUNT,currency:'BRL',paymentMethod:'PIX',installments:1,traceable:true,customer:validated.customer,shipping:{fee:0,address:validated.shipping.address},items:[{title:'Taxa de reentrega',unitPrice:REDELIVERY_AMOUNT,quantity:1,tangible:false,externalRef:env.REDELIVERY_PRODUCT_ID}],pix:{expiresInDays:1},metadata:JSON.stringify({kind:'redelivery',attemptId:id,orderId:row.id,cycle:state.cycle}),ip:request.headers.get('CF-Connecting-IP')||undefined};
+  if(env.WEBHOOK_SECRET)order.postbackUrl=SITE+'/api/webhook/umbrella/'+env.WEBHOOK_SECRET;
+  try{
+    const data=await upstream(env,'/user/transactions',{method:'POST',body:JSON.stringify(order)}),pix=data.pix||{},copyPaste=pix.qrcode||pix.qrCode||pix.copyPaste||pix.copy_paste||pix.payload||pix.code||data.qrCode;
+    if(!data.id||Number(data.amount)!==REDELIVERY_AMOUNT||typeof copyPaste!=='string'||!copyPaste.startsWith('000201')||copyPaste.length>4096)throw Error('Resposta de pagamento inválida');
+    const expiresAt=Date.parse(pix.expirationDate||pix.expiresAt||'')||Date.now()+86400000,payment={orderId:data.id,amount:REDELIVERY_AMOUNT,copyPaste,expiresAt,status:data.status};
+    await env.PAYMENTS_DB.prepare("UPDATE redelivery_payments SET transaction_id=?,state='ready',result=? WHERE id=? AND state='creating'").bind(data.id,await encryptEmail(env,payment),id).run();
+    if(hasEmail(env))await safeOrderEmail(env,order,payment).catch(()=>null);
+    if(data.status==='PAID')await syncRedeliveryTransaction(env,data);
+    return json(payment);
+  }catch{
+    await env.PAYMENTS_DB.prepare("UPDATE redelivery_payments SET state='uncertain' WHERE id=? AND state='creating'").bind(id).run();
+    return json({message:'A geração está em verificação. Não tente pagar novamente. Entre em contato com a loja para conferir.'},502);
+  }
+}
+
 async function handle(request, env) {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
@@ -379,6 +565,7 @@ async function handle(request, env) {
     if (Number(request.headers.get('Content-Length') || 0) > 12000) return json({ message: 'Solicitação muito grande.' }, 413);
   }
   if (url.pathname.startsWith('/api/admin/')) return adminRoutes(request,env,url);
+  if(url.pathname.startsWith('/api/redelivery/'))return redeliveryRoutes(request,env,url);
   if (url.pathname === '/api/tracking' && request.method === 'GET') {
     const code=(url.searchParams.get('code')||'').toUpperCase();
     if(!/^GKC-[A-F0-9]{32}$/.test(code))return json({message:'Confira o código de acompanhamento enviado por e-mail.'},404);
@@ -387,7 +574,7 @@ async function handle(request, env) {
     if(!row)return json({message:'Pedido não encontrado. Confira o código enviado por e-mail.'},404);
     const details=await decryptEmail(env,row.details);
     const events=await env.PAYMENTS_DB.prepare('SELECT e.stage,e.note,e.location,e.occurred_at,e.source,p.city,p.state,p.latitude,p.longitude FROM order_events e LEFT JOIN order_map_points p ON p.event_id=e.id WHERE e.order_id=? ORDER BY e.occurred_at DESC,e.rowid DESC').bind(row.id).all();
-    return json({orderCode:row.order_code,trackingCode:row.tracking_code,paymentStatus:row.payment_status,amount:row.amount,customer:{name:details.customer.name},address:details.address,items:details.items,paidAt:row.paid_at,stage:row.stage,carrier:row.carrier,carrierCode:row.carrier_code,estimatedDelivery:row.estimated_delivery,stages:STAGES.map((title,i)=>({title,from:i*3+1,to:(i+1)*3})),events:events.results||[]});
+    return json({orderCode:row.order_code,trackingCode:row.tracking_code,paymentStatus:row.payment_status,amount:row.amount,customer:{name:details.customer.name},address:details.address,items:details.items,paidAt:row.paid_at,stage:row.stage,carrier:row.carrier,carrierCode:row.carrier_code,estimatedDelivery:row.estimated_delivery,stages:STAGES.map((title,i)=>({title,from:i*3+1,to:(i+1)*3})),delivery:await deliverySummary(env,row),events:events.results||[]});
   }
   if (url.pathname === '/api/pix' && request.method === 'POST') {
     let body; try { const raw = await request.text(); if (raw.length > 12000) return json({ message: 'Solicitação muito grande.' }, 413); body = JSON.parse(raw); prepareOrder(body); } catch (e) { return json({ message: e.message || 'Confira os dados.' }, 400); }

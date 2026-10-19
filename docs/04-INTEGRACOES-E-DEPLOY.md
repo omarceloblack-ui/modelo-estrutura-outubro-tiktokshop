@@ -41,3 +41,7 @@ URLs de vendas, pagamento, rastreio, painel e repositório; acesso administrativ
 ## Bloqueio antes do primeiro deploy
 
 Cumprir RASTREAMENTO.md, registrar os campos rastreamento da ficha e executar preflight. É permitido manter Meta desativada com decisão documentada; não ignorar a conferência de UTMs. Ativação real exige pixel, segredo, versão de API e testes de recebimento/deduplicação.
+
+## Entregas e notificações atualizadas
+
+Consulte ../OPERACAO.md para o fluxo completo: cinco etapas confirmadas, e-mail automático, três tentativas, solicitação de cancelamento, taxa opcional e novo ciclo somente após PAID. Outbox criptografada, idempotência, estados de falha e teste administrativo incorporados. Configuração real e homologação financeira continuam obrigatórias na nova loja.

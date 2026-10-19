@@ -22,3 +22,7 @@ Conclua apenas quando as quatro páginas, valores, segurança e publicação est
 ## Regra anterior ao primeiro deploy
 
 Inclua RASTREAMENTO.md na leitura obrigatória, antes de docs/04-INTEGRACOES-E-DEPLOY.md. Execute sua conferência e registre a decisão de ativação na ficha. Não confundir código preparado com Pixel/CAPI ativados ou validados na Meta.
+
+## Entrega, reentrega e e-mails
+
+Leia OPERACAO.md antes de configurar, publicar ou operar. Configurar produto de taxa próprio, remetente e administrador exclusivos; nunca copiar IDs ou dados da loja de referência. Testar notificações, deduplicação, falhas e tentativas. Manter modo template até validação.

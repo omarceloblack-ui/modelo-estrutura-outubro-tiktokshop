@@ -32,3 +32,7 @@ Requer Node.js 24; não exige instalação de dependências.
 ## Publicar
 
 Cloudflare Pages: branch `main`, saída `dist`, sem comando de build. Nenhum projeto público é criado automaticamente pela matriz. Siga o guia de integrações depois do briefing e configure D1 e segredos próprios. A documentação distingue estrutura pronta, conexão e validação em produção.
+
+## Entregas e notificações atualizadas
+
+Consulte OPERACAO.md para o fluxo completo: cinco etapas confirmadas, e-mail automático, três tentativas, solicitação de cancelamento, taxa opcional e novo ciclo somente após PAID. Outbox criptografada, idempotência, estados de falha e teste administrativo incorporados. Configuração real e homologação financeira continuam obrigatórias na nova loja.

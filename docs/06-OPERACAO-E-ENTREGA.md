@@ -12,3 +12,7 @@
 10. Para outra loja, criar novo repositório pela matriz e repetir os checklists, sem copiar dados de compradores.
 
 Entregar limitações conhecidas, pendências e resultado dos testes. Guardar fontes e licenças das mídias. Avaliações e condições comerciais precisam permanecer verdadeiras.
+
+## Entregas e notificações atualizadas
+
+Consulte ../OPERACAO.md para o fluxo completo: cinco etapas confirmadas, e-mail automático, três tentativas, solicitação de cancelamento, taxa opcional e novo ciclo somente após PAID. Outbox criptografada, idempotência, estados de falha e teste administrativo incorporados. Configuração real e homologação financeira continuam obrigatórias na nova loja.

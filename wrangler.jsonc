@@ -8,6 +8,7 @@
     "ADMIN_EMAIL": "",
     "META_ENABLED": "false",
     "META_PIXEL_ID": "",
-    "META_GRAPH_VERSION": ""
+    "META_GRAPH_VERSION": "",
+    "REDELIVERY_PRODUCT_ID": ""
   }
 }

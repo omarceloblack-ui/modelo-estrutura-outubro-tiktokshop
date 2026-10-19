@@ -29,3 +29,9 @@ Identidade neutra, CNPJ/WhatsApp a configurar, e-mail fictício e preço de exem
 ## Rastreamento pré-configurado — 19/10/2026
 
 UTMs de primeiro/último acesso, transporte ao checkout, persistência criptografada e exibição administrativa incorporados. Pixel+CAPI preparados e desativados, sem pixel ou token. Confirmação paga com e-mail individual e deduplicação de eventos incluídas. RASTREAMENTO.md obrigatório antes do primeiro deploy; preflight exige revisão, teste de UTMs e decisão explícita. Modo template, preço de exemplo e isolamento preservados. Publicação somente no GitHub.
+
+## Operação e e-mails — 19/10/2026
+
+Entrega manual por etapas, três tentativas, cancelamento solicitado, reentrega opcional de R$ 10,00, novo ciclo após PAID e e-mails automáticos implementados. Filtros operacionais e estados da outbox no painel. OPERACAO.md contém configuração e limites. Meta preparada e desativada. Nenhum pedido real alterado para teste.
+
+Matriz sem conexão financeira: STORE_MODE=template, remetente/admin vazios, REDELIVERY_PRODUCT_ID vazio e nenhum binding D1. Código sincronizado; sem deploy Cloudflare.

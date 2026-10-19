@@ -36,3 +36,19 @@ Banner, mensagens promocionais e desconto por quantidade removidos do seletor, c
 ## Rastreamento — 19/10/2026
 
 27 testes locais aprovados; recursos e sintaxe conferidos. Testes cobrem preservação de UTMs após PAID sem metadata, normalização/hash, ausência de CPF/endereço completo na Meta, Purchase apenas após PAID e deduplicação. Configuração de produção não copiada; STORE_MODE=template bloqueia operações reais e META_ENABLED=false. Recebimento/deduplicação na Meta, credenciais, privacidade e entrega real do novo e-mail continuam pendentes da ativação da nova loja. Nenhum deploy Cloudflare da matriz foi executado.
+
+# Validação — 19/10/2026
+
+## Evidência local
+
+- Etapas manuais e 1ª/2ª/3ª tentativa exigem autenticação, pagamento e estados compatíveis.
+- Pix de taxa fixo no servidor, deduplicação, timeout incerto, pagamento canônico, ciclo 2, endereço corrigido, preservação de histórico e pagamento tardio em revisão cobertos por testes.
+- E-mails de etapas e tentativas, link individual, falha/timeout, retry com mesma chave, conteúdo criptografado, limpeza após aceite e limite de tentativas cobertos com serviço simulado.
+- Teste administrativo limitado ao ADMIN_EMAIL, sem alteração de pedido e sem cobrança.
+- Scripts e recursos locais conferidos pelo verificador.
+
+## Limites
+
+Não houve pagamento financeiro real da taxa, estorno ou alterações de entrega em pedidos de clientes. Resend simulado comprova código, não caixa de entrada. Registro do envio real e deploy será acrescentado após execução. Reenvios não usam cron autônomo; exigem acesso ao painel ou botão de retry. Meta desativada.
+
+Resultado: 38 testes locais aprovados; testes de isolamento da matriz incluídos. Nenhum serviço real configurado ou publicado na matriz.

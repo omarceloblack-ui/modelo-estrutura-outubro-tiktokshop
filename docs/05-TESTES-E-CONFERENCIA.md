@@ -27,3 +27,7 @@ Registrar evidências por etapa em `RELATORIO-VALIDACAO.md`: arquivo, simulaçã
 - [ ] Deploy concluído no commit correto e links finais funcionando.
 
 Sem autorização específica: não pagar, não criar cobrança real, não enviar testes a clientes e não alterar pedidos reais para simular entrega. Falta de teste real deve constar no relatório.
+
+## Entregas e notificações atualizadas
+
+Consulte ../OPERACAO.md para o fluxo completo: cinco etapas confirmadas, e-mail automático, três tentativas, solicitação de cancelamento, taxa opcional e novo ciclo somente após PAID. Outbox criptografada, idempotência, estados de falha e teste administrativo incorporados. Configuração real e homologação financeira continuam obrigatórias na nova loja.

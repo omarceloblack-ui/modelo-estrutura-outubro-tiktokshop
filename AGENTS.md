@@ -16,3 +16,7 @@ Antes de modificar, leia `INSTRUCOES.md`, `ESTADO.md` e a documentação na orde
 ## Rastreamento obrigatório
 
 Leia RASTREAMENTO.md antes de qualquer primeiro deploy. Conferência de UTMs e decisão explícita de Meta ativa/inativa são obrigatórias; registrar na ficha e no relatório. Nunca copiar pixel, token, domínio, banco ou dados de compradores de outra loja. A matriz mantém STORE_MODE=template e META_ENABLED=false.
+
+## Entrega, reentrega e e-mails
+
+Leia OPERACAO.md antes de configurar, publicar ou operar. Configurar produto de taxa próprio, remetente e administrador exclusivos; nunca copiar IDs ou dados da loja de referência. Testar notificações, deduplicação, falhas e tentativas. Manter modo template até validação.

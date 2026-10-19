@@ -31,6 +31,7 @@
       ['sedex','📦','Sedex - Correios Rápido','Chega amanhã','R$ 33,40']
     ].map(([id,icon,name,eta,price])=>'<button type="button" data-shipping="'+id+'" aria-pressed="false" class="mb-shipping"><span class="mb-shipping-dot"></span><span aria-hidden="true" style="font-size:22px">'+icon+'</span><span style="flex:1"><strong>'+name+'</strong><small style="display:block;margin-top:4px">'+eta+'</small></span><strong>'+price+'</strong></button>').join('');
     const cart=document.querySelector('#lv-step-2 main > section:nth-child(2)');
+    const policy=document.createElement('p');policy.className='muted';policy.style.cssText='font-size:11px;line-height:1.6;margin-top:12px';policy.textContent='Após três tentativas confirmadas sem sucesso por motivo atribuível ao destinatário, você poderá solicitar cancelamento para análise ou uma reentrega opcional de R$ 10,00, com nova previsão de até 15 dias após o pagamento. Falhas da loja/transportadora são tratadas pelo atendimento.';panel.appendChild(policy);
     cart.insertBefore(panel,cart.querySelector('hr'));oldPanel.remove();
     const firstCart=document.querySelector('#lv-step-1 main > section:nth-child(2)');
     if(firstCart){
@@ -40,7 +41,7 @@
       freePreview.setAttribute('aria-pressed','true');
       freePreview.setAttribute('aria-label','Frete grátis, chega em 10 dias');
       freePreview.style.marginTop='16px';
-      firstCart.insertBefore(freePreview,firstCart.querySelector('hr'));
+      firstCart.insertBefore(freePreview,firstCart.querySelector('hr'));firstCart.insertBefore(policy.cloneNode(true),firstCart.querySelector('hr'));
     }
   }
 

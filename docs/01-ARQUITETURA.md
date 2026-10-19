@@ -36,3 +36,7 @@ Seletor: faixa ESCOLHA SUA COR, tags por cor, CLIQUE AQUI com pulsação respeit
 Checkout: etapas antes do carrinho; cartão verde de frete grátis na identificação; frete grátis e Sedex integrados ao carrinho da entrega. Quantidade, frete, total e sessão devem permanecer coerentes ao voltar etapas. Jadlog não aparece na interface; suporte legado no servidor não representa oferta ativa.
 
 `/api/location` consulta cidade aproximada brasileira de `request.cf`, sem cache compartilhado e sem armazenar IP. Não substitui CEP/endereço de entrega. Em prévia local ou cidade ausente, mostrar apenas Frete grátis.
+
+## Entregas e notificações atualizadas
+
+Consulte ../OPERACAO.md para o fluxo completo: cinco etapas confirmadas, e-mail automático, três tentativas, solicitação de cancelamento, taxa opcional e novo ciclo somente após PAID. Outbox criptografada, idempotência, estados de falha e teste administrativo incorporados. Configuração real e homologação financeira continuam obrigatórias na nova loja.
