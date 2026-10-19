@@ -52,3 +52,7 @@ Banner, mensagens promocionais e desconto por quantidade removidos do seletor, c
 Não houve pagamento financeiro real da taxa, estorno ou alterações de entrega em pedidos de clientes. Resend simulado comprova código, não caixa de entrada. Registro do envio real e deploy será acrescentado após execução. Reenvios não usam cron autônomo; exigem acesso ao painel ou botão de retry. Meta desativada.
 
 Resultado: 38 testes locais aprovados; testes de isolamento da matriz incluídos. Nenhum serviço real configurado ou publicado na matriz.
+
+## Referência externa de integração
+
+A implementação correspondente na loja de referência foi publicada e teve um e-mail fictício de movimentação recebido na caixa do administrador, sem duplicidade ao repetir a solicitação. Isso não valida remetente, banco ou cobrança de futuras lojas desta matriz. A matriz permanece sem serviços de produção, com 38 testes locais aprovados e verificador aprovado. GitHub Actions do commit 7858b61 concluído com sucesso: https://github.com/omarceloblack-ui/modelo-estrutura-outubro-tiktokshop/actions/runs/39326519554 .
