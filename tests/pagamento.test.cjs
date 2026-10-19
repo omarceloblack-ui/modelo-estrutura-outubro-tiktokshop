@@ -115,3 +115,33 @@ test('recupera contatos omitidos na consulta individual sem confiar em dados do 
  global.fetch=async url=>Response.json({data:String(url).includes('?limit=100')?{data:[{...full,customer:order.customer}],pages:1}:full});
  try{const response=await worker.default.fetch(new Request('https://loja.example/api/webhook/umbrella/partial-webhook',{method:'POST',body:JSON.stringify({objectId:full.id,customer:{email:'attacker@example.com'}})}),env);assert.equal(response.status,200);const row=db.db.prepare('SELECT * FROM orders').get();assert.ok(row);assert.equal(row.payment_status,'WAITING_PAYMENT');assert.ok(!row.details.includes('attacker'));}finally{global.fetch=old;}
 });
+
+test('UTMs são limitadas, vinculadas ao pedido e preservadas após confirmação sem metadata',async()=>{
+ const db=new Database(),env={UMBRELLA_API_KEY:'attribution-test',PAYMENTS_DB:db},b=body();
+ b.attribution={first:{utm_source:'facebook',utm_campaign:'campanha-inicial',secret:'não guardar'},last:{utm_source:'instagram',utm_content:'anuncio-2',utm_term:'x'.repeat(500)}};
+ const order=worker.prepareOrder(b);assert.equal(JSON.parse(order.metadata).attribution.last.utm_term.length,300);assert.ok(!JSON.parse(order.metadata).attribution.first.secret);
+ const payment={orderId:'utm-preserved',amount:3790,status:'WAITING_PAYMENT',expiresAt:Date.now()+10000};
+ await worker.saveOrder(env,order,payment);await worker.saveOrder(env,{...order,metadata:'{}'},{...payment,status:'PAID'});
+ const row=db.db.prepare('SELECT * FROM orders WHERE id=?').get(payment.orderId),[iv,data]=row.details.split('.');
+ const key=await crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',new TextEncoder().encode('order-email:'+env.UMBRELLA_API_KEY)),'AES-GCM',false,['decrypt']);
+ const stored=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:Buffer.from(iv,'base64url')},key,Buffer.from(data,'base64url'))));
+ assert.equal(stored.attribution.first.utm_campaign,'campanha-inicial');assert.equal(stored.attribution.last.utm_source,'instagram');assert.equal(row.payment_status,'PAID');assert.ok(!row.details.includes('facebook'));
+});
+
+test('Meta fica inativa sem configuração e Purchase só sai após PAID com deduplicação',async()=>{
+ const db=new Database(),env={UMBRELLA_API_KEY:'meta-order-test',PAYMENTS_DB:db,STORE_MODE:'live',META_PIXEL_ID:'123456',META_ACCESS_TOKEN:'test-only',META_GRAPH_VERSION:'v99.0'},order=worker.prepareOrder(body()),old=global.fetch,calls=[];
+ global.fetch=async(url,options)=>{calls.push({url,event:JSON.parse(options.body).data[0]});return Response.json({events_received:1});};
+ try{
+  assert.equal((await(await worker.default.fetch(new Request('https://loja.example/api/marketing/config'),env)).json()).enabled,false);
+  assert.equal(await worker.sendMetaEvent(env,{}),'disabled');assert.equal(calls.length,0);
+  env.META_ENABLED='true';const payment={orderId:'meta-order',amount:3790,status:'WAITING_PAYMENT',expiresAt:Date.now()+10000};
+  await worker.saveOrder(env,order,payment);assert.equal(calls.length,1);assert.equal(calls[0].event.event_name,'PixGerado');
+  await worker.saveOrder(env,order,{...payment,status:'PAID'});await worker.saveOrder(env,order,{...payment,status:'PAID'});
+  const purchases=calls.filter(call=>call.event.event_name==='Purchase');assert.equal(purchases.length,1);assert.equal(purchases[0].event.event_id,'purchase:meta-order');assert.equal(purchases[0].event.custom_data.value,37.90);assert.equal(purchases[0].event.user_data.em[0].length,64);assert.ok(!JSON.stringify(purchases).includes(order.customer.email));for(const key of ['em','ph','fn','ln','ct','st','zp','country'])assert.match(purchases[0].event.user_data[key][0],/^[a-f0-9]{64}$/);assert.ok(!JSON.stringify(purchases).includes(order.customer.document.number));assert.ok(!JSON.stringify(purchases).includes(order.customer.address.street));
+ }finally{global.fetch=old;}
+});
+
+test('e-mail confirmado tem código individual e link pronto sem instrução de pagar novamente',()=>{
+ const order=worker.prepareOrder(body()),row={order_code:'PED-TESTE',tracking_code:'GKC-ABC123'},email=worker.buildPaidOrderEmail(order,{amount:3790},row);
+ assert.ok(email.html.includes('Parabéns'));assert.ok(email.html.includes('rastreio?codigo=GKC-ABC123'));assert.ok(email.html.includes('Acompanhar meu pedido'));assert.ok(!email.html.includes('Pague com Pix'));assert.ok(!email.html.includes('copia e cola'));
+});

@@ -32,3 +32,7 @@ Banner, mensagens promocionais e desconto por quantidade removidos do seletor, c
 - Modo template continua bloqueando Pix e administração reais; rastreio de demonstração preservado.
 - Testes de servidor/mapa e verificação de recursos executados localmente. Prévia visual conferida; nenhum pagamento ou e-mail real realizado.
 - Publicação solicitada somente no GitHub. Integrações e ativação de outra loja continuam pendentes do briefing.
+
+## Rastreamento — 19/10/2026
+
+27 testes locais aprovados; recursos e sintaxe conferidos. Testes cobrem preservação de UTMs após PAID sem metadata, normalização/hash, ausência de CPF/endereço completo na Meta, Purchase apenas após PAID e deduplicação. Configuração de produção não copiada; STORE_MODE=template bloqueia operações reais e META_ENABLED=false. Recebimento/deduplicação na Meta, credenciais, privacidade e entrega real do novo e-mail continuam pendentes da ativação da nova loja. Nenhum deploy Cloudflare da matriz foi executado.

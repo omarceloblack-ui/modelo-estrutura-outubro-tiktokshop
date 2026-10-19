@@ -37,3 +37,7 @@ Preferir simulações. Para cobrança ou pagamento real, obter dados autorizados
 ## Entregar
 
 URLs de vendas, pagamento, rastreio, painel e repositório; acesso administrativo; código de demonstração; relatório e orientações operacionais. Nunca entregar segredos em texto de relatório.
+
+## Bloqueio antes do primeiro deploy
+
+Cumprir RASTREAMENTO.md, registrar os campos rastreamento da ficha e executar preflight. É permitido manter Meta desativada com decisão documentada; não ignorar a conferência de UTMs. Ativação real exige pixel, segredo, versão de API e testes de recebimento/deduplicação.

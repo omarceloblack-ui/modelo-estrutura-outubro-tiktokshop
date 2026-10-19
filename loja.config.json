@@ -39,5 +39,15 @@
     "bancoD1": null,
     "dominioResendVerificado": false,
     "webhookConfigurado": false
+  },
+  "rastreamento": {
+    "revisadoAntesDeploy": false,
+    "utmValidado": false,
+    "meta": {
+      "decisao": null,
+      "pixelId": null,
+      "eventosValidados": false,
+      "credencialConfiguradaNaHospedagem": false
+    }
   }
 }

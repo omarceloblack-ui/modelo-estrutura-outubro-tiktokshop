@@ -10,6 +10,70 @@ const digits = value => String(value || '').replace(/\D/g, '');
 const text = (value, max = 160) => String(value || '').trim().slice(0, max);
 const money = cents => (Number(cents) / 100).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+export function cleanAttribution(value) {
+  if (!value || typeof value !== 'object') return null;
+  const result={};
+  for(const touch of ['first','last']) {
+    const data=value[touch];if(!data||typeof data!=='object')continue;
+    const clean={};
+    for(const key of ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','utm_id','fbclid','landingPath','capturedAt'])
+      if(typeof data[key]==='string'&&data[key].trim())clean[key]=text(data[key],300);
+    if(Object.keys(clean).length)result[touch]=clean;
+  }
+  return Object.keys(result).length?result:null;
+}
+function orderAttribution(order) {
+  let metadata={};try{metadata=typeof order.metadata==='string'?JSON.parse(order.metadata):order.metadata||{};}catch{}
+  return cleanAttribution(order.attribution||metadata.attribution);
+}
+function metaEnabled(env) {return env.META_ENABLED==='true'&&/^\d+$/.test(env.META_PIXEL_ID||'')&&Boolean(env.META_ACCESS_TOKEN)&&/^v\d+\.\d+$/.test(env.META_GRAPH_VERSION||'')&&env.STORE_MODE==='live';}
+async function sha256(value){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',encoder.encode(value)))).map(n=>n.toString(16).padStart(2,'0')).join('');}
+export async function sendMetaEvent(env, event) {
+  if(!metaEnabled(env)||!env.PAYMENTS_DB)return 'disabled';
+  await env.PAYMENTS_DB.prepare('CREATE TABLE IF NOT EXISTS meta_events (event_id TEXT PRIMARY KEY, name TEXT NOT NULL, state TEXT NOT NULL, attempts INTEGER NOT NULL DEFAULT 0, updated_at INTEGER NOT NULL)').run();
+  await env.PAYMENTS_DB.prepare("INSERT OR IGNORE INTO meta_events (event_id,name,state,updated_at) VALUES (?,?,'pending',0)").bind(event.event_id,event.event_name).run();
+  const now=Date.now();
+  const claimed=await env.PAYMENTS_DB.prepare("UPDATE meta_events SET state='sending',attempts=attempts+1,updated_at=? WHERE event_id=? AND state!='sent' AND attempts<5 AND (state!='sending' OR updated_at<?) AND updated_at<?").bind(now,event.event_id,now-60000,now-10000).run();
+  if(!claimed.meta?.changes)return 'already_recorded';
+  try{
+    const body={data:[event],access_token:env.META_ACCESS_TOKEN};if(env.META_TEST_EVENT_CODE)body.test_event_code=env.META_TEST_EVENT_CODE;
+    const response=await fetch('https://graph.facebook.com/'+env.META_GRAPH_VERSION+'/'+env.META_PIXEL_ID+'/events',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(8000)});
+    const data=await response.json();if(!response.ok||data.events_received!==1)throw Error('Meta unavailable');
+    await env.PAYMENTS_DB.prepare("UPDATE meta_events SET state='sent',updated_at=? WHERE event_id=?").bind(Date.now(),event.event_id).run();return 'sent';
+  }catch{
+    await env.PAYMENTS_DB.prepare("UPDATE meta_events SET state='pending',updated_at=? WHERE event_id=?").bind(Date.now(),event.event_id).run();return 'pending';
+  }
+}
+async function orderMetaEvent(env,row,details,paid){
+  if(!metaEnabled(env))return;
+  const user={};if(details.customer.email)user.em=[await sha256(details.customer.email.trim().toLowerCase())];
+  const phone=digits(details.customer.phone);if(phone)user.ph=[await sha256(phone.length===13&&phone.startsWith('55')?phone:'55'+phone)];
+  const names=String(details.customer.name||'').trim().toLowerCase().split(/\s+/).filter(Boolean);
+  if(names.length)user.fn=[await sha256(names[0])];
+  if(names.length>1)user.ln=[await sha256(names[names.length-1])];
+  const address=details.address||{},city=String(address.city||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'');
+  if(city)user.ct=[await sha256(city)];
+  if(address.state)user.st=[await sha256(String(address.state).trim().toLowerCase())];
+  if(address.zipCode)user.zp=[await sha256(digits(address.zipCode))];
+  user.country=[await sha256('br')];
+  if(details.marketingContext?.userAgent)user.client_user_agent=details.marketingContext.userAgent;
+  if(details.marketingContext?.ip)user.client_ip_address=details.marketingContext.ip;
+  if(details.marketingContext?.fbp)user.fbp=details.marketingContext.fbp;
+  if(details.marketingContext?.fbc)user.fbc=details.marketingContext.fbc;
+  const touch=details.attribution?.last;
+  if(!user.fbc&&touch?.fbclid&&Number.isFinite(Date.parse(touch.capturedAt)))user.fbc='fb.1.'+Date.parse(touch.capturedAt)+'.'+touch.fbclid;
+  const items=details.items||[];
+  await sendMetaEvent(env,{event_name:paid?'Purchase':'PixGerado',event_id:(paid?'purchase:':'pix:')+row.id,event_time:Math.floor((paid?row.paid_at:row.created_at)/1000),action_source:'website',event_source_url:SITE+'/pagamento',user_data:user,custom_data:{currency:'BRL',value:row.amount/100,order_id:row.id,content_type:'product',content_ids:items.map(item=>item.externalRef),num_items:items.reduce((sum,item)=>sum+item.quantity,0),contents:items.map(item=>({id:item.externalRef,quantity:item.quantity,item_price:item.unitPrice/100}))}});
+}
+export function buildPaidOrderEmail(order,payment,row){
+  const link=SITE+'/rastreio?codigo='+encodeURIComponent(row.tracking_code);
+  const name=order.customer.name,items=order.items.map(item=>`${item.quantity} × ${item.title} — ${money(item.quantity*item.unitPrice)}`);
+  const address=order.shipping?.address||order.customer.address||{};
+  const addressLine=[address.street,address.streetNumber,address.complement,address.neighborhood,address.city,address.state,address.zipCode].filter(Boolean).join(', ');
+  const textBody=`Parabéns, ${name}! Sua compra foi efetuada com sucesso e o pagamento está confirmado.\nPedido: ${row.order_code}\n${items.join('\n')}\nTotal: ${money(payment.amount)}\nEntrega: ${addressLine}\nCódigo individual de acompanhamento: ${row.tracking_code}\nAcompanhe seu pedido: ${link}\nPrevisão inicial: até 15 dias após a confirmação. Movimentações registradas pela loja após contato com a transportadora.\nLoja de exemplo`;
+  const html=`<div style="background:#f5f5f5;padding:24px;font-family:Arial,sans-serif;color:#161823"><div style="max-width:560px;margin:auto;background:#fff;border-radius:16px;overflow:hidden"><div style="padding:24px;background:#161823;color:white;font-size:24px;font-weight:bold">Marcelo <span style="color:#fe2c55">Black</span></div><div style="padding:28px"><p style="color:#059669;font-weight:bold">PAGAMENTO CONFIRMADO</p><h1 style="font-size:25px">Parabéns, ${escapeHtml(name)}!</h1><p>Sua compra foi efetuada com sucesso.</p><p>Pedido <strong>${escapeHtml(row.order_code)}</strong></p><ul>${items.map(item=>'<li style="margin:10px 0">'+escapeHtml(item)+'</li>').join('')}</ul><p style="font-size:21px;font-weight:bold">Total pago: ${escapeHtml(money(payment.amount))}</p><p><strong>Endereço de entrega</strong><br>${escapeHtml(addressLine)}</p><div style="background:#fff0f4;padding:16px;border-radius:10px"><strong>Seu código individual de acompanhamento</strong><p style="word-break:break-all;font-family:monospace">${escapeHtml(row.tracking_code)}</p></div><p>Clique abaixo para acompanhar seu pedido:</p><a href="${escapeHtml(link)}" style="display:inline-block;background:#fe2c55;color:white;text-decoration:none;padding:15px 24px;border-radius:9px;font-weight:bold">Acompanhar meu pedido</a><p style="font-size:12px;color:#71717a;margin-top:22px">Previsão inicial de até 15 dias após a confirmação. As movimentações são registradas pela loja após contato com a transportadora. Este código identifica o acompanhamento da loja; o código da transportadora será informado quando disponível.</p></div></div></div>`;
+  return{to:[order.customer.email],subject:'Parabéns! Pagamento confirmado — '+row.order_code,text:textBody,html};
+}
 export function buildOrderEmail(order, payment) {
   const address = order.shipping?.address || order.customer.address || {};
   const addressLine = [address.street, address.streetNumber, address.complement, address.neighborhood, address.city, address.state, address.zipCode].filter(Boolean).join(', ');
@@ -85,18 +149,18 @@ export async function saveOrder(env, order, payment) {
   const created = Number.isFinite(Date.parse(payment.createdAt || '')) ? Date.parse(payment.createdAt) : now;
   const paidAt = paid ? (Date.parse(payment.paidAt || '') || now) : null;
   const code = 'PED-' + new Date(created).toISOString().slice(0,10).replaceAll('-','') + '-' + crypto.randomUUID().slice(0,8).toUpperCase();
-  const details = await encryptEmail(env, { customer:{ name:order.customer.name, email:order.customer.email, phone:order.customer.phone || '' }, address:order.shipping?.address || order.customer.address || {}, items:order.items, shippingFee:order.shipping?.fee || 0, copyPaste:payment.copyPaste || '', expiresAt:payment.expiresAt });
+  const previous=await env.PAYMENTS_DB.prepare('SELECT details FROM orders WHERE id=?').bind(payment.orderId).first();
+  const stored=previous?await decryptEmail(env,previous.details):{};
+  const detailsObject={customer:{name:stored.customer?.name||order.customer.name,email:stored.customer?.email||order.customer.email,phone:stored.customer?.phone||order.customer.phone||''},address:order.shipping?.address||order.customer.address||{},items:order.items,shippingFee:order.shipping?.fee??stored.shippingFee??0,copyPaste:payment.copyPaste||stored.copyPaste||'',expiresAt:payment.expiresAt,attribution:stored.attribution||orderAttribution(order),marketingContext:stored.marketingContext||order.marketingContext||null};
+  const details=await encryptEmail(env,detailsObject);
   await env.PAYMENTS_DB.prepare('INSERT INTO orders (id,order_code,tracking_code,amount,payment_status,details,created_at,paid_at,stage,estimated_delivery,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET amount=excluded.amount, payment_status=excluded.payment_status, details=excluded.details, paid_at=COALESCE(orders.paid_at,excluded.paid_at), stage=CASE WHEN excluded.payment_status=\'PAID\' AND orders.stage=0 THEN 1 ELSE orders.stage END, estimated_delivery=COALESCE(orders.estimated_delivery,excluded.estimated_delivery), updated_at=excluded.updated_at').bind(payment.orderId,code,randomCode(),payment.amount,payment.status,details,created,paidAt,paid?1:0,paid?new Date(paidAt+15*86400000).toISOString().slice(0,10):null,now).run();
   if (paid) await env.PAYMENTS_DB.prepare("INSERT OR IGNORE INTO order_events (id,order_id,stage,note,location,occurred_at,source) VALUES (?,?,1,'Pagamento confirmado pela UmbrellaPag','',?,'provider')").bind('payment:' + payment.orderId,payment.orderId,paidAt).run();
   const row = await env.PAYMENTS_DB.prepare('SELECT * FROM orders WHERE id = ?').bind(payment.orderId).first();
   if (paid && hasEmail(env)) {
-    const email = buildOrderEmail(order, { ...payment, status:'PAID' });
-    const link = SITE + '/rastreio?codigo=' + encodeURIComponent(row.tracking_code);
-    email.subject = 'Pagamento confirmado — acompanhe seu pedido ' + row.order_code;
-    email.text = `Pagamento confirmado!\nPedido: ${row.order_code}\nCódigo de acompanhamento: ${row.tracking_code}\nAcompanhe seu pedido: ${link}\nPrevisão inicial: até 15 dias após a confirmação. As movimentações são atualizadas pela loja após contato com a transportadora.\n\n` + email.text;
-    email.html = email.html.replace('<h1 style="font-size:21px">', `<p style="color:#fe2c55;font-weight:bold">${escapeHtml(row.order_code)}</p><h1 style="font-size:21px">`).replace('href="https://loja-exemplo.invalid/"', 'href="' + escapeHtml(link) + '"').replace('Visitar a loja','Acompanhar meu pedido').replace('</h1>', `</h1><p>Código de acompanhamento: <strong>${escapeHtml(row.tracking_code)}</strong></p><p style="font-size:13px">Previsão inicial: até 15 dias após a confirmação. As movimentações são atualizadas pela loja após contato com a transportadora.</p>`);
+    const email=buildPaidOrderEmail({...order,customer:detailsObject.customer,items:detailsObject.items,shipping:{address:detailsObject.address,fee:detailsObject.shippingFee}},payment,row);
     await queueEmailMessage(env, 'paid/' + payment.orderId, email).catch(() => 'pending');
   }
+  await orderMetaEvent(env,row,detailsObject,paid).catch(()=>null);
   return row;
 }
 async function syncTransaction(env, data) {
@@ -162,7 +226,7 @@ async function adminRoutes(request,env,url) {
     const filter=url.searchParams.get('status')||'all';
     const where=filter==='paid'?"WHERE payment_status='PAID'":filter==='pending'?"WHERE payment_status IN ('WAITING_PAYMENT','PROCESSING','AUTHORIZED')":'';
     const rows=await env.PAYMENTS_DB.prepare('SELECT * FROM orders '+where+' ORDER BY created_at DESC LIMIT 25 OFFSET ?').bind((page-1)*25).all();
-    const result=[];for(const row of rows.results||[]){const details=await decryptEmail(env,row.details);result.push({...row,details:undefined,customer:details.customer,items:details.items,address:details.address});}
+    const result=[];for(const row of rows.results||[]){const details=await decryptEmail(env,row.details);result.push({...row,details:undefined,customer:details.customer,items:details.items,address:details.address,attribution:details.attribution||null});}
     const stats=await env.PAYMENTS_DB.prepare("SELECT COUNT(*) AS total, SUM(CASE WHEN payment_status='PAID' THEN 1 ELSE 0 END) AS paid, SUM(CASE WHEN payment_status IN ('WAITING_PAYMENT','PROCESSING','AUTHORIZED') THEN 1 ELSE 0 END) AS pending, SUM(CASE WHEN payment_status='PAID' THEN amount ELSE 0 END) AS revenue FROM orders").first();
     return json({orders:result,stats,page,hasMore:result.length===25});
   }
@@ -235,7 +299,7 @@ export function prepareOrder(body) {
     customer: { name: text(c.name), email: text(c.email, 254).toLowerCase(), phone: digits(c.phone), document: { number: digits(c.document), type: digits(c.document).length === 14 ? 'CNPJ' : 'CPF' }, address },
     shipping: { fee: SHIPPING[body.shipping], address },
     items: colors.map(c => ({ title: 'Escova Modeladora GOKOCO — ' + c.color + ' · Bivolt', unitPrice: effectiveUnit, quantity: c.quantity, tangible: true, externalRef: PRODUCT + ':' + c.color })),
-    pix: { expiresInDays: 1 }, metadata: JSON.stringify({ productId: PRODUCT, colors, shipping: body.shipping }) };
+    pix: { expiresInDays: 1 }, metadata: JSON.stringify({ productId: PRODUCT, colors, shipping: body.shipping, attribution:cleanAttribution(body.attribution) }) };
 }
 function base64url(bytes) { return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/, ''); }
 function unbase64(value) { const s = value.replace(/-/g,'+').replace(/_/g,'/'); return Uint8Array.from(atob(s + '='.repeat((4 - s.length % 4) % 4)), c => c.charCodeAt(0)); }
@@ -266,16 +330,28 @@ async function createPayment(request, env, body) {
 }
 export function demoTracking(now=Date.now()) {
   const day=86400000,paidAt=now-6*day;
-  return {demo:true,orderCode:'PED-DEMONSTRACAO',trackingCode:'TESTE-GOKOCO',paymentStatus:'PAID',amount:3790,customer:{name:'Cliente de demonstração'},address:{city:'Recife',state:'PE'},items:[{title:'Escova Modeladora GOKOCO — preta · Bivolt',quantity:1,unitPrice:3790}],paidAt,stage:3,carrier:'Transportadora fictícia — demonstração',carrierCode:'DEMO-001',estimatedDelivery:new Date(paidAt+15*day).toISOString().slice(0,10),stages:STAGES.map((title,i)=>({title,from:i*3+1,to:(i+1)*3})),events:[{stage:3,note:'Exemplo fictício de coleta confirmada. Nenhuma encomenda real está em transporte.',location:'Campinas / SP',occurred_at:paidAt+5*day,source:'manual',city:'Campinas',state:'SP',latitude:-22.9056,longitude:-47.0608},{stage:2,note:'Exemplo fictício de pedido em preparação.',location:'São Paulo / SP',occurred_at:paidAt+2*day,source:'manual',city:'São Paulo',state:'SP',latitude:-23.5505,longitude:-46.6333},{stage:1,note:'Pagamento simulado exclusivamente para demonstrar o rastreio.',location:'',occurred_at:paidAt,source:'provider',city:null,state:null,latitude:null,longitude:null}]};
+  return {demo:true,orderCode:'PED-DEMONSTRACAO',trackingCode:'TESTE-GOKOCO',paymentStatus:'PAID',amount:1000,customer:{name:'Cliente de demonstração'},address:{city:'Recife',state:'PE'},items:[{title:'Escova Modeladora GOKOCO — preta · Bivolt',quantity:1,unitPrice:1000}],paidAt,stage:3,carrier:'Transportadora fictícia — demonstração',carrierCode:'DEMO-001',estimatedDelivery:new Date(paidAt+15*day).toISOString().slice(0,10),stages:STAGES.map((title,i)=>({title,from:i*3+1,to:(i+1)*3})),events:[{stage:3,note:'Exemplo fictício de coleta confirmada. Nenhuma encomenda real está em transporte.',location:'Campinas / SP',occurred_at:paidAt+5*day,source:'manual',city:'Campinas',state:'SP',latitude:-22.9056,longitude:-47.0608},{stage:2,note:'Exemplo fictício de pedido em preparação.',location:'São Paulo / SP',occurred_at:paidAt+2*day,source:'manual',city:'São Paulo',state:'SP',latitude:-23.5505,longitude:-46.6333},{stage:1,note:'Pagamento simulado exclusivamente para demonstrar o rastreio.',location:'',occurred_at:paidAt,source:'provider',city:null,state:null,latitude:null,longitude:null}]};
 }
 async function handle(request, env) {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+  if(url.pathname==='/api/marketing/config'&&request.method==='GET')return json({enabled:metaEnabled(env),pixelId:metaEnabled(env)?env.META_PIXEL_ID:null});
+  if(url.pathname==='/api/marketing/checkout'&&request.method==='POST'){
+    if(!metaEnabled(env))return json({status:'disabled'});
+    if(request.headers.get('Origin')!==url.origin||!request.headers.get('Content-Type')?.startsWith('application/json'))return json({message:'Solicitação inválida.'},403);
+    const raw=await request.text();if(raw.length>200)return json({message:'Solicitação inválida.'},413);
+    let input;try{input=JSON.parse(raw);}catch{return json({message:'Solicitação inválida.'},400);}
+    if(!/^[a-f0-9-]{36}$/i.test(input.eventId||''))return json({message:'Solicitação inválida.'},400);
+    const ip=request.headers.get('CF-Connecting-IP')||'unknown',key='meta:'+ip,rate=limits.get(key),now=Date.now();
+    if(rate?.until>now&&rate.count>=20)return json({message:'Aguarde.'},429);
+    limits.set(key,{count:rate?.until>now?rate.count+1:1,until:rate?.until>now?rate.until:now+600000});
+    const user={client_user_agent:request.headers.get('User-Agent')||''};if(ip!=='unknown')user.client_ip_address=ip;
+    const status=await sendMetaEvent(env,{event_name:'InitiateCheckout',event_id:input.eventId,event_time:Math.floor(now/1000),action_source:'website',event_source_url:SITE+'/pagamento',user_data:user}).catch(()=>'pending');return json({status});
+  }
   if(url.pathname==='/api/location' && request.method==='GET') {
     const city=request.cf?.country==='BR' && typeof request.cf?.city==='string' ? request.cf.city.trim().slice(0,100) : null;
     const response=json({city:city || null});response.headers.set('Cache-Control','private, no-store');return response;
   }
-
   if (url.pathname.startsWith('/api/cep/') && request.method === 'GET') {
     const cep = url.pathname.slice('/api/cep/'.length);
     if (!/^\d{8}$/.test(cep)) return json({ message: 'Informe um CEP com 8 dígitos.' }, 400);
@@ -318,6 +394,8 @@ async function handle(request, env) {
     if (!/^[a-f0-9-]{36}$/i.test(body.checkoutId || '')) return json({ message: 'Identificador inválido.' }, 400);
     const fingerprint = base64url(await crypto.subtle.digest('SHA-256', encoder.encode(JSON.stringify(prepareOrder(body)))));
     const id = body.checkoutId + ':' + fingerprint;
+    const marketingContext=metaEnabled(env)?{userAgent:text(request.headers.get('User-Agent'),500),ip:text(request.headers.get('CF-Connecting-IP'),100)}:null;
+    if(marketingContext)for(const key of ['fbp','fbc']){const value=body.marketingCookies?.[key];if(typeof value==='string'&&/^fb\.\d+\.\d+\.[A-Za-z0-9_.-]+$/.test(value))marketingContext[key]=value.slice(0,300);}
     if (!env.PAYMENTS_DB) return json({ message: 'Pagamento temporariamente indisponível.' }, 503);
     await orderTables(env);
     await env.PAYMENTS_DB.prepare('CREATE TABLE IF NOT EXISTS payment_attempts (id TEXT PRIMARY KEY, state TEXT NOT NULL, result TEXT, expires_at INTEGER NOT NULL)').run();
@@ -335,7 +413,7 @@ async function handle(request, env) {
     if (!inserted.meta?.changes) return json({ message: 'Este Pix já foi solicitado. Aguarde a geração.' }, 409);
     const pending = createPayment(request, env, body);
     inflight.set(id, pending);
-    try { const result = await pending; await env.PAYMENTS_DB.prepare("UPDATE payment_attempts SET state = 'ready', result = ? WHERE id = ?").bind(JSON.stringify(result), id).run(); await saveOrder(env,prepareOrder(body),result).catch(()=>null); const emailStatus = await safeOrderEmail(env, prepareOrder(body), result); return json({ ...result, emailStatus }); }
+    try { const result = await pending; await env.PAYMENTS_DB.prepare("UPDATE payment_attempts SET state = 'ready', result = ? WHERE id = ?").bind(JSON.stringify(result), id).run(); await saveOrder(env,{...prepareOrder(body),marketingContext},result).catch(()=>null); const emailStatus = await safeOrderEmail(env, prepareOrder(body), result); return json({ ...result, emailStatus }); }
     catch (e) { await env.PAYMENTS_DB.prepare("UPDATE payment_attempts SET state = 'uncertain' WHERE id = ?").bind(id).run(); return json({ message: e.message || 'Não foi possível gerar o Pix. Não houve confirmação de pagamento.' }, 502); }
     finally { inflight.delete(id); }
   }

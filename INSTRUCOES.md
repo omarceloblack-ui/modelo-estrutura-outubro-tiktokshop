@@ -18,3 +18,7 @@ Apresente o resumo de produto, identidade, oferta, cálculos e operação. Só p
 Não copie credenciais, produto, banco ou pedidos de outra loja. Preserve o modo `template` até concluir as etapas de configuração e validação. Teste simulado não comprova pagamento real; aceite do Resend não comprova entrega na caixa de entrada.
 
 Conclua apenas quando as quatro páginas, valores, segurança e publicação estiverem verificados ou as limitações estiverem explicitamente registradas.
+
+## Regra anterior ao primeiro deploy
+
+Inclua RASTREAMENTO.md na leitura obrigatória, antes de docs/04-INTEGRACOES-E-DEPLOY.md. Execute sua conferência e registre a decisão de ativação na ficha. Não confundir código preparado com Pixel/CAPI ativados ou validados na Meta.

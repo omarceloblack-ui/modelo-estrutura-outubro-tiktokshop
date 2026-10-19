@@ -81,7 +81,7 @@
   modal.addEventListener('click',function(e){if(e.target===modal)close();});
   function go(){
     var target=window.PAGE_CONFIG && window.PAGE_CONFIG.checkoutUrl;
-    if(target){try{['activePayment','checkoutAttempt','checkoutCart','dadosPessoais','dadosEndereco'].forEach(function(k){sessionStorage.removeItem(k);});}catch(e){}window.location.assign(target);return;}
+    if(target){try{['activePayment','checkoutAttempt','checkoutCart','dadosPessoais','dadosEndereco','metaCheckoutId','metaInitSent'].forEach(function(k){sessionStorage.removeItem(k);});}catch(e){}var url=new URL(target,location.href),attr=window.MB_ATTRIBUTION&&window.MB_ATTRIBUTION.get();if(attr&&attr.last)Object.keys(attr.last).filter(function(k){return /^utm_/.test(k)||k==='fbclid';}).forEach(function(k){url.searchParams.set(k,attr.last[k]);});window.location.assign(url.href);return;}
     cta.disabled=false;cta.style.opacity='1';update();
     window.showLocalNotice('Compra indisponível','Não foi possível abrir o pagamento. Tente novamente em instantes.');
   }

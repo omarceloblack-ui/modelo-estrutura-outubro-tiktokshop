@@ -5,6 +5,9 @@
   "vars": {
     "STORE_MODE": "template",
     "ORDER_FROM_EMAIL": "",
-    "ADMIN_EMAIL": ""
+    "ADMIN_EMAIL": "",
+    "META_ENABLED": "false",
+    "META_PIXEL_ID": "",
+    "META_GRAPH_VERSION": ""
   }
 }

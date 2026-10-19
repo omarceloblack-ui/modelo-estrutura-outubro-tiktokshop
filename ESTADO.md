@@ -25,3 +25,7 @@ Bloco Black Friday e desconto por quantidade removidos. Todas as unidades usam o
 Visual e navegação da loja de referência incorporados: oferta com título centralizado, cinco estrelas, aviso promocional único, feedbacks, seleção de cores com tags e botões rosas pulsantes, voltagem fixa informativa, checkout com etapas antes do carrinho, frete grátis desde a identificação e Sedex na entrega, rodapé claro sem caixas brancas e ícones alinhados. Localização aproximada por cidade via Cloudflare incluída.
 
 Identidade neutra, CNPJ/WhatsApp a configurar, e-mail fictício e preço de exemplo R$ 37,90 preservados. Nenhuma integração de produção foi copiada. Matriz permanece somente no GitHub, sem deploy Cloudflare.
+
+## Rastreamento pré-configurado — 19/10/2026
+
+UTMs de primeiro/último acesso, transporte ao checkout, persistência criptografada e exibição administrativa incorporados. Pixel+CAPI preparados e desativados, sem pixel ou token. Confirmação paga com e-mail individual e deduplicação de eventos incluídas. RASTREAMENTO.md obrigatório antes do primeiro deploy; preflight exige revisão, teste de UTMs e decisão explícita. Modo template, preço de exemplo e isolamento preservados. Publicação somente no GitHub.

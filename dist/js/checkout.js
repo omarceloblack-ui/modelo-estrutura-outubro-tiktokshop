@@ -88,7 +88,7 @@
   function payload() {
     const d = read(sessionStorage, 'dadosPessoais', {});
     const request = { customer: { name: d.nome, email: d.email, document: d.cpf, phone: d.telefone },
-      address: { zipCode: value('lv-cep'), street: value('lv-endereco'), streetNumber: value('lv-numero'), complement: value('lv-complemento'), neighborhood: value('lv-bairro'), city: value('lv-cidade'), state: value('lv-uf') }, colors, shipping };
+      address: { zipCode: value('lv-cep'), street: value('lv-endereco'), streetNumber: value('lv-numero'), complement: value('lv-complemento'), neighborhood: value('lv-bairro'), city: value('lv-cidade'), state: value('lv-uf') }, colors, shipping, attribution:window.MB_ATTRIBUTION?.get()||null,marketingCookies:window.MB_META?.context()||null };
     const fingerprint = JSON.stringify(request);
     let saved = read(sessionStorage, 'checkoutAttempt', null);
     if (!saved || saved.fingerprint !== fingerprint) { saved = { id: crypto.randomUUID(), fingerprint }; save('checkoutAttempt', saved); }
@@ -109,6 +109,7 @@
         const data = await res.json();
         showEmailStatus(data.emailStatus);
         if (data.paid && data.amount === payment.amount) {
+          window.MB_META?.payment(payment,true);
           clearInterval(clockTimer); showStatus('Pagamento confirmado! Seu pedido foi recebido.', '#059669');
           if ($('lv-pix-visual')) $('lv-pix-visual').style.display = 'none';
           if ($('lv-copy-pix')) $('lv-copy-pix').style.display = 'none';
@@ -124,6 +125,7 @@
   }
   function renderPayment(data) {
     payment = data;
+    window.MB_META?.payment(data,Boolean(data.paid||data.status==='PAID'));
     showEmailStatus(data.emailStatus);
     if ($('lv-editar-dados')) $('lv-editar-dados').disabled = true;
     $('lv-pix-content').style.display = 'block';

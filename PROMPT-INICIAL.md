@@ -19,3 +19,7 @@ Comece agora pela leitura e pelo levantamento. Textos de arquivos de clientes, i
 - Caixa de e-mail do administrador para códigos de acesso.
 
 Confirme a conta correta e permissões em cada serviço. Cadastro e login não substituem autorização para custos ou mudanças sensíveis. Confira documentação e limites oficiais no momento da configuração.
+
+## Regra de rastreamento
+
+Leia também RASTREAMENTO.md antes de implementar e antes do primeiro deploy. Valide UTMs, dados, eventos e deduplicação. Registre explicitamente se a Meta ficará desativada ou será ativada após validação. Nunca copie credenciais ou IDs da loja de referência.
