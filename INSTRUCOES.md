@@ -3,7 +3,7 @@
 ## Ordem obrigatória
 
 1. `AGENTS.md`: regras operacionais.
-2. `ESTADO.md`: situação atual.
+2. `INICIO-RAPIDO.md`, `BRIEFING.md` e `ESTADO.md`: preparação, perguntas e situação atual.
 3. `docs/01-ARQUITETURA.md`: arquivos e fluxo.
 4. `docs/02-CHECKLIST-CONTAS.md`: acessos e serviços.
 5. `docs/03-CHECKLIST-PRODUTO.md` e `loja.config.json`: briefing.

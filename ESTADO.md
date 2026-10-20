@@ -39,3 +39,7 @@ Matriz sem conexão financeira: STORE_MODE=template, remetente/admin vazios, RED
 ## Avaliações da loja — 20/10/2026
 
 Seção limitada a dois relatos existentes sobre embalagem e entrega, com identificação da origem e revisão obrigatória para novas lojas. Trechos de desempenho, vídeos demonstrativos, fotos de produto na seção, notas agregadas, datas relativas e marcações de compra confirmada retirados. Nenhum novo elogio criado. Loja original preservada.
+
+## Início local e briefing — 20/10/2026
+
+Fluxo padrão atualizado: usuário baixa a matriz e abre a pasta exclusiva; briefing completo e contas independentes em INICIO-RAPIDO.md/BRIEFING.md. Novo repositório só depois do nome, sem envio à matriz. Nenhuma conexão real criada.

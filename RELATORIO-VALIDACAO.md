@@ -60,3 +60,7 @@ A implementação correspondente na loja de referência foi publicada e teve um 
 ## Avaliações da matriz — 20/10/2026
 
 Mantidos somente os relatos existentes de Camila S. (trecho de embalagem, omissão indicada por [...]) e Renata G. (entrega). Nenhum elogio novo criado. Removidos relatos de desempenho, vídeos de uso, fotos de produto na seção, notas agregadas e metadados comerciais herdados. Instruções exigem confirmação de origem/autorização/aplicabilidade na nova operação. Conferência textual e estrutural local concluída; 38 testes simulados aprovados e node verificar.cjs aprovado (22 scripts). Nenhum serviço real acionado e nenhum deploy Cloudflare.
+
+## Instruções de início — 20/10/2026
+
+INICIO-RAPIDO.md e BRIEFING.md adicionados; README, prompt, ordem de leitura e checklists alinhados ao download manual em pasta exclusiva e contas novas por loja. Nome definido antes de criar novo repositório; proibido enviar personalizações à matriz. Perguntas cobrem produto/identidade, acessos, oferta, operação, e-mails, Meta e publicação. 38 testes simulados e npm run check aprovados; documentos conferidos localmente. Skill privada alinhada e validada, com sete testes do helper aprovados; não incluída no repositório. Sem novos serviços, pagamentos, e-mails reais ou deploy Cloudflare.

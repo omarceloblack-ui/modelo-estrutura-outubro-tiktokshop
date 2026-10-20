@@ -2,7 +2,7 @@
 
 Base independente para criar uma nova loja em um repositório privado. Nenhuma conta, credencial, banco ou pedido da loja anterior está conectado.
 
-Comece por [PROMPT-INICIAL.md](PROMPT-INICIAL.md) e [INSTRUCOES.md](INSTRUCOES.md). O exemplo de escova, preço, cores, oferta e mídia é demonstrativo. Deve ser substituído e aprovado para cada produto.
+Comece por [INICIO-RAPIDO.md](INICIO-RAPIDO.md), responda ao [BRIEFING.md](BRIEFING.md) e use [PROMPT-INICIAL.md](PROMPT-INICIAL.md). As regras e a ordem técnica estão em [INSTRUCOES.md](INSTRUCOES.md). O exemplo de escova, preço, cores, oferta e mídia é demonstrativo. Deve ser substituído e aprovado para cada produto.
 
 | Página | Arquivo | Endereço |
 |---|---|---|
@@ -15,7 +15,7 @@ Scripts, estilos e imagens ficam nas pastas compartilhadas de `dist`. O servidor
 
 ## Criar outra loja
 
-No GitHub, use **Use this template → Create a new repository**, com nome exclusivo e visibilidade privada. Clone ou baixe esse novo repositório para uma pasta própria em Documentos. Abra a conversa nessa pasta e use o prompt inicial. Mantenha recursos e segredos exclusivos de cada loja.
+Baixe a matriz atual e extraia em uma pasta exclusiva. Abra a conversa nessa pasta. Defina o nome no briefing e crie depois um repositório independente na conta GitHub da nova loja. Não envie personalizações à matriz. Cada loja usa novos cadastros de GitHub, Cloudflare, Umbrella, Resend e Meta, com domínio, banco e segredos próprios. Confira o checklist de contas antes de conectar serviços.
 
 ## Executar
 

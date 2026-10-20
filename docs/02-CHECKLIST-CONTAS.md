@@ -1,20 +1,23 @@
-# 02 — Contas, acessos e preparação
+# 02 — Contas próprias e acessos
 
-- [ ] Criar repositório privado a partir do template; baixar/clonar para pasta exclusiva em Documentos.
-- [ ] Abrir a conversa na nova pasta; conferir origem Git e branch. Não trabalhar na matriz ou em outra loja.
-- [ ] GitHub aberto e logado: https://github.com/ — acesso ao repositório e instalação Cloudflare.
-- [ ] Cloudflare aberta: https://dash.cloudflare.com/ — confirmar conta e plano desejados.
-- [ ] UmbrellaPag aberta: https://umbrellapag.com/ — conta comercial correta, habilitada para Pix.
-- [ ] Resend aberto: https://resend.com/ — conta correta e domínio de envio.
-- [ ] E-mail do administrador aberto para códigos de acesso.
-- [ ] DNS acessível se for necessário autenticar o remetente.
-- [ ] Definir nome do projeto, endereço gratuito pages.dev ou domínio próprio já pertencente ao usuário.
-- [ ] Conferir quotas e preços atuais em fontes oficiais; gratuito não significa ilimitado.
-- [ ] Confirmar e-mail único de admin e remetente.
-- [ ] Criar chave Umbrella para a operação, quando permitido pelo provedor. Nunca usar uma chave encontrada no código.
-- [ ] Criar chave Resend somente de envio, restrita ao domínio autorizado.
-- [ ] Gerar segredo aleatório exclusivo do webhook.
-- [ ] Guardar segredos apenas na Cloudflare. Não preencher a ficha com chaves.
-- [ ] Identificar contratos, custos, ampliação de acesso ou ações que exigem participação do usuário.
+Para cada loja, usar novos cadastros independentes. Sessões conectadas no navegador ajudam; verificar também autenticação e conta efetiva das ferramentas API/CLI.
 
-Conta logada não autoriza gastos, pagamento de teste ou aceitação de contrato. Se houver MFA/CAPTCHA ou sessão expirada, pedir intervenção conforme a ferramenta exigir.
+| Serviço | Preparação |
+| --- | --- |
+| GitHub — https://github.com/ | Conta própria; novo repositório privado ou visibilidade aprovada. Acesso à matriz privada para baixar/conferir a base. |
+| Cloudflare — https://dash.cloudflare.com/ | Conta própria; novos Pages, D1, domínio e segredos. |
+| Umbrella — https://umbrellapag.com/ | Conta comercial própria aprovada para Pix; produto principal, produto da taxa quando aplicável, chave e webhook exclusivos. |
+| Resend — https://resend.com/ | Conta própria; domínio remetente autenticado e chave de envio apropriada. |
+| Meta — https://business.facebook.com/ | Conta/negócio com acesso ao Gerenciador de Eventos; Pixel/dataset e token próprios. Manter integração desativada até decisão e validação. |
+| Registro/DNS | Domínio comprado, acesso à configuração DNS para loja e remetente. |
+| Caixa administrativa | E-mail ativo para códigos de acesso e testes autorizados. Domínio no Resend não cria caixa postal. |
+
+- [ ] Confirmar conta, propriedade e permissões antes de criar/conectar cada recurso.
+- [ ] Confirmar nome da loja antes de nomear os recursos definitivos.
+- [ ] Segredos só na hospedagem ou arquivo local ignorado, sem chat, ficha, logs ou Git.
+- [ ] Gerar segredo exclusivo de webhook; não copiar chave, pixel ou banco de outra loja.
+- [ ] Pessoa responsável disponível para MFA/CAPTCHA, verificação comercial e termos.
+- [ ] Conferir limites/custos vigentes nos provedores antes de contratar. Login não autoriza despesas.
+- [ ] Definir admin, remetente, suporte, destinatário de testes e decisão Meta.
+
+Começar pela pasta já baixada conforme [INICIO-RAPIDO.md](../INICIO-RAPIDO.md). Perguntas completas em [BRIEFING.md](../BRIEFING.md).

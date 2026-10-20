@@ -44,3 +44,7 @@
 ## Avaliações da loja
 
 Na matriz, manter apenas relatos reais sobre loja, atendimento, embalagem ou entrega, preservando o sentido original. Não adaptar elogios de desempenho para outro produto. Relatos da operação de origem não comprovam a experiência da nova loja: confirmar origem, autorização e aplicabilidade antes de publicar; se não aplicáveis, retirar. Fotos e vídeos de uso de outro produto não acompanham esses relatos. Não herdar notas, totais de avaliações, selo de compra confirmada ou datas relativas sem comprovação. A matriz contém dois relatos de embalagem/entrega como referência identificada; nenhum relato específico de atendimento foi encontrado.
+
+## Perguntas completas e fluxo atual
+
+Usar [BRIEFING.md](../BRIEFING.md) como roteiro completo das perguntas e [INICIO-RAPIDO.md](../INICIO-RAPIDO.md) para começar pela pasta já baixada. Este checklist técnico complementa o briefing; respostas anteriores e autorizações vigentes devem ser aproveitadas. Cada nova loja utiliza contas independentes nos cinco serviços.

@@ -24,3 +24,7 @@ Leia OPERACAO.md antes de configurar, publicar ou operar. Configurar produto de 
 ## Avaliações da loja
 
 Na matriz, manter apenas relatos reais sobre loja, atendimento, embalagem ou entrega, preservando o sentido original. Não adaptar elogios de desempenho para outro produto. Relatos da operação de origem não comprovam a experiência da nova loja: confirmar origem, autorização e aplicabilidade antes de publicar; se não aplicáveis, retirar. Fotos e vídeos de uso de outro produto não acompanham esses relatos. Não herdar notas, totais de avaliações, selo de compra confirmada ou datas relativas sem comprovação. A matriz contém dois relatos de embalagem/entrega como referência identificada; nenhum relato específico de atendimento foi encontrado.
+
+## Entrada pela pasta baixada
+
+Em nova loja, ler INICIO-RAPIDO.md e BRIEFING.md antes de perguntar/editar. Trabalhar na pasta já baixada; não obter outra cópia automaticamente. Novos cadastros de GitHub, Cloudflare, Umbrella, Resend e Meta por loja. Conferir origem/alterações sem sobrescrever; criar destino Git independente após o nome definido e nunca enviar personalizações à matriz. Documentos da matriz são suficientes para orientar sem skill. Não confundir resultados históricos com testes da nova loja.
