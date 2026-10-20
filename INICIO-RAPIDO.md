@@ -40,3 +40,7 @@ Login aberto não garante acesso por API/CLI: conferir conta e autenticação de
 Pagamento e estorno real exigem autorização específica. Testes de e-mail usam destinatário autorizado e conteúdo fictício. Distinguir simulação, aceite do provedor, recebimento real e pagamento confirmado.
 
 Use [PROMPT-INICIAL.md](PROMPT-INICIAL.md), mesmo sem a skill instalada.
+
+## Como iniciar e como retomar
+
+Em cada nova loja, enviar o texto de PROMPT-INICIAL.md na conversa da pasta exclusiva. A skill é opcional; se instalada, pode ser invocada antes do prompt. Para continuar uma loja, abrir sua própria pasta e pedir leitura do estado e retomada, sem repetir briefing resolvido nem baixar a matriz sobre alterações existentes.

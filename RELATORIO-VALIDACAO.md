@@ -64,3 +64,8 @@ Mantidos somente os relatos existentes de Camila S. (trecho de embalagem, omiss�
 ## Instruções de início — 20/10/2026
 
 INICIO-RAPIDO.md e BRIEFING.md adicionados; README, prompt, ordem de leitura e checklists alinhados ao download manual em pasta exclusiva e contas novas por loja. Nome definido antes de criar novo repositório; proibido enviar personalizações à matriz. Perguntas cobrem produto/identidade, acessos, oferta, operação, e-mails, Meta e publicação. 38 testes simulados e npm run check aprovados; documentos conferidos localmente. Skill privada alinhada e validada, com sete testes do helper aprovados; não incluída no repositório. Sem novos serviços, pagamentos, e-mails reais ou deploy Cloudflare.
+
+## Prompt final e retomada — 20/10/2026
+
+Texto final aprovado incorporado ao PROMPT-INICIAL.md, com invocação opcional da skill e orientação de retomada. README e início rápido alinhados. Alteração somente documental; 38 testes simulados e npm run check aprovados (22 scripts). Sem cobrança, envio real de e-mail ou deploy Cloudflare.
+

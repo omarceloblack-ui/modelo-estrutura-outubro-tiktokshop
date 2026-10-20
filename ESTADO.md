@@ -43,3 +43,7 @@ Seção limitada a dois relatos existentes sobre embalagem e entrega, com identi
 ## Início local e briefing — 20/10/2026
 
 Fluxo padrão atualizado: usuário baixa a matriz e abre a pasta exclusiva; briefing completo e contas independentes em INICIO-RAPIDO.md/BRIEFING.md. Novo repositório só depois do nome, sem envio à matriz. Nenhuma conexão real criada.
+
+## Prompt confirmado — 20/10/2026
+
+PROMPT-INICIAL.md alinhado ao texto final confirmado pelo usuário. Instruções distinguem nova loja e retomada; skill opcional, sem instalação pelo repositório. Somente documentação alterada, sem modificação da operação.
