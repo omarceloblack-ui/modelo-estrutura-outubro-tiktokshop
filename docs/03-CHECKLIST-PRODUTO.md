@@ -40,3 +40,7 @@
 - [ ] Aprovar promoção diária, cronômetro, estoque, estrelas, vendas e feedbacks; remover elementos sem dados reais.
 - [ ] Confirmar frete gratuito, cobertura, Sedex, prazos e voltagem fixa do produto.
 - [ ] Substituir preço de exemplo de R$ 37,90 em todas as camadas e no produto Umbrella.
+
+## Avaliações da loja
+
+Na matriz, manter apenas relatos reais sobre loja, atendimento, embalagem ou entrega, preservando o sentido original. Não adaptar elogios de desempenho para outro produto. Relatos da operação de origem não comprovam a experiência da nova loja: confirmar origem, autorização e aplicabilidade antes de publicar; se não aplicáveis, retirar. Fotos e vídeos de uso de outro produto não acompanham esses relatos. Não herdar notas, totais de avaliações, selo de compra confirmada ou datas relativas sem comprovação. A matriz contém dois relatos de embalagem/entrega como referência identificada; nenhum relato específico de atendimento foi encontrado.

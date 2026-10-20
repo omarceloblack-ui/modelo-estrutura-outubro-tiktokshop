@@ -56,3 +56,7 @@ Resultado: 38 testes locais aprovados; testes de isolamento da matriz incluídos
 ## Referência externa de integração
 
 A implementação correspondente na loja de referência foi publicada e teve um e-mail fictício de movimentação recebido na caixa do administrador, sem duplicidade ao repetir a solicitação. Isso não valida remetente, banco ou cobrança de futuras lojas desta matriz. A matriz permanece sem serviços de produção, com 38 testes locais aprovados e verificador aprovado. GitHub Actions do commit 7858b61 concluído com sucesso: https://github.com/omarceloblack-ui/modelo-estrutura-outubro-tiktokshop/actions/runs/39326519554 .
+
+## Avaliações da matriz — 20/10/2026
+
+Mantidos somente os relatos existentes de Camila S. (trecho de embalagem, omissão indicada por [...]) e Renata G. (entrega). Nenhum elogio novo criado. Removidos relatos de desempenho, vídeos de uso, fotos de produto na seção, notas agregadas e metadados comerciais herdados. Instruções exigem confirmação de origem/autorização/aplicabilidade na nova operação. Conferência textual e estrutural local concluída; 38 testes simulados aprovados e node verificar.cjs aprovado (22 scripts). Nenhum serviço real acionado e nenhum deploy Cloudflare.

@@ -35,3 +35,7 @@ UTMs de primeiro/último acesso, transporte ao checkout, persistência criptogra
 Entrega manual por etapas, três tentativas, cancelamento solicitado, reentrega opcional de R$ 10,00, novo ciclo após PAID e e-mails automáticos implementados. Filtros operacionais e estados da outbox no painel. OPERACAO.md contém configuração e limites. Meta preparada e desativada. Nenhum pedido real alterado para teste.
 
 Matriz sem conexão financeira: STORE_MODE=template, remetente/admin vazios, REDELIVERY_PRODUCT_ID vazio e nenhum binding D1. Código sincronizado; sem deploy Cloudflare.
+
+## Avaliações da loja — 20/10/2026
+
+Seção limitada a dois relatos existentes sobre embalagem e entrega, com identificação da origem e revisão obrigatória para novas lojas. Trechos de desempenho, vídeos demonstrativos, fotos de produto na seção, notas agregadas, datas relativas e marcações de compra confirmada retirados. Nenhum novo elogio criado. Loja original preservada.

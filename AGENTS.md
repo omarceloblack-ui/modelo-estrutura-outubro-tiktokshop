@@ -20,3 +20,7 @@ Leia RASTREAMENTO.md antes de qualquer primeiro deploy. Conferência de UTMs e d
 ## Entrega, reentrega e e-mails
 
 Leia OPERACAO.md antes de configurar, publicar ou operar. Configurar produto de taxa próprio, remetente e administrador exclusivos; nunca copiar IDs ou dados da loja de referência. Testar notificações, deduplicação, falhas e tentativas. Manter modo template até validação.
+
+## Avaliações da loja
+
+Na matriz, manter apenas relatos reais sobre loja, atendimento, embalagem ou entrega, preservando o sentido original. Não adaptar elogios de desempenho para outro produto. Relatos da operação de origem não comprovam a experiência da nova loja: confirmar origem, autorização e aplicabilidade antes de publicar; se não aplicáveis, retirar. Fotos e vídeos de uso de outro produto não acompanham esses relatos. Não herdar notas, totais de avaliações, selo de compra confirmada ou datas relativas sem comprovação. A matriz contém dois relatos de embalagem/entrega como referência identificada; nenhum relato específico de atendimento foi encontrado.
