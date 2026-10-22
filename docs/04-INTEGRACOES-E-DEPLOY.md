@@ -1,34 +1,34 @@
 # 04 — Implementação e conexão
 
-Somente após o briefing aprovado. Consultar documentação oficial atual antes de chamadas a serviços; contas e formatos podem mudar.
+Comece pelo clone já aberto, após analisar seus arquivos e briefing. A skill está incluída em `.agents/skills/construir-loja-completa/`; não precisa ser baixada. Consultar documentação oficial atual antes de chamadas a serviços; contas, permissões e formatos mudam.
 
 ## 1. Personalizar
 
-Substituir o conteúdo de exemplo, oferta, variantes, marca e dados operacionais conforme arquitetura. Manter os 19 feedbacks, quatro vídeos e respectivas mídias da página de referência: sua reutilização está autorizada na matriz e em cópias derivadas sem confirmação adicional. Remover outras referências não utilizadas. Preços em centavos, com cálculo canônico no servidor. Validar logo, mobile, links e recursos. Não copiar selos de plataforma.
+Manter Escova Modeladora GOKOCO por R$ 37,90, cores, imagens, layout, logo TikTok Shop e os 19 feedbacks/quatro vídeos autorizados. Remover/substituir nome, CNPJ, contatos e recursos da operação de origem. Reentrega opcional custa R$ 10,00 e não altera o frete inicial. Preços em centavos, com cálculo canônico no servidor. Validar links e recursos; não copiar selos de plataforma.
 
 ## 2. GitHub
 
-Usar novo repositório privado criado pelo template, branch main. Conferir remoto e arquivos antes do push. Não subir `.env`, `.dev.vars`, banco, exports de clientes ou chaves. Executar testes e registrar mudanças. A matriz tem verificação automática no GitHub Actions.
+Após definir o nome, criar repositório GitHub novo e vazio, privado por padrão, na conta autenticada da operação. Preferir API/CLI oficial autorizada; confirmar nome, conta e visibilidade. Se a criação exigir UI/MFA, abrir a página no navegador e guiar essa etapa. Copiar a pasta-fonte para pasta irmã sem `.git`/segredos/caches, iniciar Git limpo e revisar diff antes de push. Nunca fazer fork nem apontar remoto da loja para a matriz. Não subir `.env`, `.dev.vars`, banco, exports de clientes ou chaves. Executar testes e registrar mudanças.
 
 ## 3. Cloudflare Pages e D1
 
-Criar projeto exclusivo, conectar o repositório certo, saída `dist`, sem comando de build. Criar D1 exclusivo e vincular como `PAYMENTS_DB`. Adicionar esse binding ao Wrangler com ID do banco novo. Não reutilizar IDs de outra loja. Manter `STORE_MODE=template` enquanto configura. Confirmar que configurações do Wrangler e painel não se contradizem.
+Listar contas e zonas Cloudflare, identificar a conta autorizada e criar Pages e D1 exclusivos. Pages oferece subdomínio `*.pages.dev` para o site. Para domínio personalizado, usar somente domínio controlado pela operação e associar pelo fluxo oficial Pages; não presumir que há domínio gratuito registrado. Saída `dist`, sem comando de build. Criar D1 exclusivo, vincular como `PAYMENTS_DB`, preencher o ID novo no Wrangler. O Worker contém SQL/schema para inicializar as tabelas; não baixar SQL externo. Validar schema pelo código e testes antes da ativação. Manter `STORE_MODE=template` enquanto configura.
 
 ## 4. Umbrella
 
-Conferir conta comercial, gerar chave apropriada e guardar `UMBRELLA_API_KEY` como segredo na Cloudflare. Criar/reutilizar o produto correto desta loja, com tipo físico/digital e preço aprovados. Preencher `PRODUCT`, valores e campos necessários no worker. Não gerar cobrança real só para conferir uma integração.
+Conferir conta comercial e documentação API vigente. Listar produtos Umbrella primeiro. Se não houver equivalente nesta conta, criar o produto físico Escova Modeladora GOKOCO a R$ 37,90 pela API oficial; criar/confirmar também o produto de reentrega de R$ 10,00 se exigido pelo fluxo. Comparar conta, título, preço, tipo e status para evitar duplicatas. Guardar os IDs próprios na configuração da nova loja e a `UMBRELLA_API_KEY` somente como segredo Cloudflare. Se API, acesso ou aprovação comercial faltarem, parar e orientar a etapa manual sem afirmar sucesso. Nunca reutilizar IDs de outra loja nem gerar cobrança real para testar. [Criar produto](https://docs.umbrellapag.com/create-20025733e0) · [Listar produtos](https://docs.umbrellapag.com/find-all-20025734e0).
 
 Registrar webhook TRANSACTION em `/api/user/webhook` conforme documentação atual; URL de destino `/api/webhook/umbrella/<segredo>`. Gerar `WEBHOOK_SECRET` exclusivo e guardá-lo como segredo. Nunca registrar a URL inteira no Git. O servidor deve consultar a transação canônica; status recebido no corpo não prova pagamento.
 
 ## 5. Resend
 
-Autenticar o domínio remetente no DNS com os registros reais apresentados pela conta, sem remover registros existentes nem enfraquecer DMARC. Domínio do site pode continuar pages.dev; envio autenticado exige domínio de e-mail próprio. Criar chave somente de envio e restrita ao domínio; guardar `RESEND_API_KEY` como segredo.
+Listar zonas da conta Cloudflare e confirmar propriedade/controle para escolher domínio remetente. O `*.pages.dev` serve o site, mas não substitui domínio próprio autenticado para envio de produção. Se não houver domínio controlado, manter e-mails reais bloqueados; não inventar domínio, comprar ou alterar nameservers/DNS sem autorização. Adicionar apenas registros indicados pelo Resend, sem remover registros existentes nem enfraquecer DMARC. Após verificação de envio concluída, criar chave de envio restrita e guardar `RESEND_API_KEY` como segredo. Consultar [documentação oficial do Resend](https://resend.com/docs).
 
 Preencher `ORDER_FROM_EMAIL` e `ADMIN_EMAIL` com valores reais aprovados. Testar e-mail administrativo, pedido pendente com Pix e confirmação com link. E-mail de pendente não declara pagamento aprovado. Verificar entrega, não apenas aceite da API. Evitar duplicatas e respeitar limites do plano.
 
 ## 6. Segurança e ativação
 
-Conferir banco, chaves, preço, ID do produto, remetente, domínio e links. Executar checklist de testes. Configurar a constante `SITE` com URL HTTPS real. Só trocar `STORE_MODE` para `live` quando a loja estiver aprovada e preparada. Publicar pelo GitHub e conferir a conclusão do deploy e as quatro páginas no domínio final.
+Conferir banco, chaves, preço, IDs de produto, remetente, domínio e links. Criar/selecionar Pixel/dataset novo no Gerenciador de Eventos da conta Meta da loja e obter token CAPI próprio por fluxo oficial; se a permissão/MFA exigir pessoa, guiar a etapa. Não copiar Pixel da origem. Deixar `META_ENABLED=false` até testar e aprovar; pode permanecer desativado por decisão documentada. Executar checklist de testes. Configurar a constante `SITE` com URL HTTPS real. Só trocar `STORE_MODE` para `live` quando a loja estiver aprovada e preparada. Publicar pelo GitHub e conferir deploy e quatro páginas.
 
 ## 7. Teste real controlado
 

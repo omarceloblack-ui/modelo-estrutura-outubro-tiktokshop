@@ -59,7 +59,7 @@ Resultado: 38 testes locais aprovados; testes de isolamento da matriz incluídos
 
 ## Referência externa de integração
 
-A implementação correspondente na loja de referência foi publicada e teve um e-mail fictício de movimentação recebido na caixa do administrador, sem duplicidade ao repetir a solicitação. Isso não valida remetente, banco ou cobrança de futuras lojas desta matriz. A matriz permanece sem serviços de produção, com 38 testes locais aprovados e verificador aprovado. GitHub Actions do commit 7858b61 concluído com sucesso: https://github.com/omarceloblack-ui/modelo-estrutura-outubro-tiktokshop/actions/runs/39326519554 .
+A implementação correspondente na loja de referência foi publicada e teve um e-mail fictício de movimentação recebido na caixa do administrador, sem duplicidade ao repetir a solicitação. Isso não valida remetente, banco ou cobrança de futuras lojas desta matriz. A matriz permanece sem serviços de produção, com 38 testes locais aprovados e verificador aprovado. A execução histórica do GitHub Actions terminou com sucesso; isso não valida lojas novas.
 
 ## Avaliações da matriz — 20/10/2026
 
@@ -81,3 +81,7 @@ Conferidos os blocos no projeto local Escova Modeladora e na página publicada; 
 ## Verificação completa e publicação — 22/10/2026
 
 Testes simulados repetidos: 38/38 aprovados; npm run check: 22 scripts e recursos válidos. Inclui compra Pix fictícia, rastreio, painel, notificações e reentrega. Sem cobrança ou operação de pedido real. Referências antigas de marca removidas da pasta principal da loja; matriz usa a logo permanente TikTok Shop. Revisão estática do pacote fonte da loja não encontrou execução automática suspeita. Não equivale a análise antivírus.
+
+## Skill e fluxo independente — 22/10/2026
+
+Skill construir-loja-completa embutida integralmente em .agents/skills/, com referências, assets, script e testes; URLs e conta de origem removidos da cópia. Palavra iniciar instrui Codex a ler a cópia local. Pastas de novas lojas devem ser irmãs limpas, sem histórico/segredos da matriz, e usar repositório GitHub vazio privado. Defaults conferidos: produto Escova Modeladora GOKOCO R$ 37,90; reentrega R$ 10,00; cores/fotos/frete existentes; logo TikTok Shop; feedbacks/vídeos autorizados. Documentados GitHub, Cloudflare Pages/D1, Umbrella (listar e criar evitando duplicata), Resend/domínio e Meta/Pixel próprios. Identidade comercial e contatos pessoais foram removidos do código; nenhum CNPJ real encontrado na revisão textual. Apenas documentação/código-base; nenhum serviço externo ou loja nova foi criado.

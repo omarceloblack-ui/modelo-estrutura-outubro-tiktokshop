@@ -1,0 +1,4 @@
+interface:
+  display_name: "Construtor de lojas completo"
+  short_description: "Cria lojas pela matriz e conduz toda a configuração"
+  default_prompt: "Use $construir-loja-completa para trabalhar nesta pasta da matriz já baixada, preservar alterações, fazer somente as perguntas faltantes e preparar uma prévia antes da publicação autorizada."

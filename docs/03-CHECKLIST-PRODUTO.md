@@ -30,8 +30,8 @@
 - [ ] Retenção dos dados e responsabilidades de atendimento.
 - [ ] Chat automático identificado como tal e alinhado à oferta real.
 - [ ] Preencher `loja.config.json` sem credenciais.
-- [ ] Apresentar resumo, cálculos e pendências.
-- [ ] Receber aprovação do resumo antes de implementar, conectar e publicar.
+- [ ] Apresentar resumo, cálculos e pendências, aproveitando os valores-base aprovados na matriz.
+- [ ] Perguntar apenas dados faltantes ou mudanças comerciais; não pedir aprovação repetida para produto, preço, visual e mídias-base já definidos.
 
 ## Conferir ao reutilizar o visual
 
@@ -39,7 +39,8 @@
 - [ ] Validar selos/certificações e métodos de pagamento; remover afirmações não comprovadas.
 - [ ] Aprovar promoção diária, cronômetro, estoque, estrelas e vendas; preservar os feedbacks e vídeos autorizados da página de referência.
 - [ ] Confirmar frete gratuito, cobertura, Sedex, prazos e voltagem fixa do produto.
-- [ ] Substituir preço de exemplo de R$ 37,90 em todas as camadas e no produto Umbrella.
+- [ ] Manter preço-base aprovado de R$ 37,90 em todas as camadas e criar/confirmar produto próprio Umbrella; mudar somente mediante pedido expresso.
+- [ ] Manter taxa de reentrega de R$ 10,00 e distinguir do frete inicial; criar/confirmar produto próprio Umbrella quando necessário.
 
 ## Feedbacks e vídeos da página de referência
 

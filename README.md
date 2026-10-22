@@ -2,7 +2,9 @@
 
 Base independente para criar uma nova loja em um repositório privado. Nenhuma conta, credencial, banco ou pedido da loja anterior está conectado.
 
-Comece por [INICIO-RAPIDO.md](INICIO-RAPIDO.md), responda ao [BRIEFING.md](BRIEFING.md) e use [PROMPT-INICIAL.md](PROMPT-INICIAL.md). As regras e a ordem técnica estão em [INSTRUCOES.md](INSTRUCOES.md). O produto, preço, cores e oferta de demonstração devem ser revisados para cada loja. Os 19 feedbacks e quatro vídeos da página de referência são conteúdo autorizado da matriz e podem ser reutilizados integralmente, sem aprovação adicional.
+Comece por [INICIO-RAPIDO.md](INICIO-RAPIDO.md), responda ao [BRIEFING.md](BRIEFING.md) e use [PROMPT-INICIAL.md](PROMPT-INICIAL.md). As regras e a ordem técnica estão em [INSTRUCOES.md](INSTRUCOES.md). A skill inteira e referências estão incluídas em `.agents/skills/construir-loja-completa/`; baixe somente este repositório. Abra a pasta no Codex e escreva `iniciar`.
+
+Produto-base fixo: Escova Modeladora GOKOCO por R$ 37,90, cores, layout e imagens atuais. Taxa opcional de reentrega: R$ 10,00, separada do frete inicial. Manter TikTok Shop e os 19 feedbacks/quatro vídeos da referência. Nome empresarial, CNPJ, contatos e todas as contas/IDs da nova operação são próprios e não podem vir da origem.
 
 | Página | Arquivo | Endereço |
 |---|---|---|
@@ -15,7 +17,9 @@ Scripts, estilos e imagens ficam nas pastas compartilhadas de `dist`. O servidor
 
 ## Criar outra loja
 
-Baixe a matriz atual e extraia em uma pasta exclusiva. Abra a conversa nessa pasta. Defina o nome no briefing e crie depois um repositório independente na conta GitHub da nova loja. Não envie personalizações à matriz. Cada loja usa novos cadastros de GitHub, Cloudflare, Umbrella, Resend e Meta, com domínio, banco e segredos próprios. Confira o checklist de contas antes de conectar serviços.
+Baixe/clone esta matriz e extraia em pasta exclusiva. Abra a conversa nessa pasta e escreva `iniciar`. O agente lê a skill local e analisa esta cópia sem baixar outra. Defina o nome no briefing e depois crie um repositório privado independente na conta GitHub da nova loja. Nunca envie personalizações à matriz. Cada loja usa GitHub, Cloudflare, Umbrella, Resend, Meta, domínio autorizado, banco e segredos próprios. Confira o checklist antes de conectar serviços.
+
+Pages oferece `*.pages.dev` para o site. E-mail de produção precisa de domínio próprio verificado no Resend: a instrução é listar domínios/zones que a operação controla na conta Cloudflare. Se nenhum estiver disponível, não fazer envio real e não comprar domínio sem autorização.
 
 ## Executar
 
@@ -39,7 +43,7 @@ Consulte OPERACAO.md para o fluxo completo: cinco etapas confirmadas, e-mail aut
 
 ## Prompt e retomada
 
-O [prompt inicial](PROMPT-INICIAL.md) contém o texto aprovado para iniciar cada nova loja e uma opção curta para retomar uma loja existente. Funciona sem skill instalada; a invocação da skill privada é opcional. A skill não faz parte deste repositório.
+O [prompt inicial](PROMPT-INICIAL.md) contém o texto para iniciar ou retomar. A skill completa está incluída em `.agents/skills/construir-loja-completa/` e viaja com esta matriz.
 # Logo permanente
 
 A matriz mantém a logo TikTok Shop em `dist/assets/logo-tiktok-shop.png` nos cabeçalhos, checkout, opção de frete grátis, rodapé e favicon. Essa logo é fixa; configure nome, cores e demais dados da loja sem substituir a marca TikTok Shop.

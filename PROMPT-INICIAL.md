@@ -1,26 +1,22 @@
 # Prompt inicial para cada nova loja
 
-Baixe a matriz atualizada, extraia em uma pasta exclusiva e abra essa pasta como projeto no Codex. Copie o texto abaixo na conversa dessa pasta. Funciona mesmo sem a skill instalada, pois as instruções estão neste repositório.
+Baixe ou clone esta matriz, extraia em uma pasta exclusiva e abra-a como projeto no Codex. A skill completa e as instruções já estão incluídas no repositório. Na conversa da pasta, envie `iniciar` para acionar o texto abaixo.
 
 ## Texto para copiar
 
-> Esta pasta contém a matriz que baixei para criar uma nova loja independente. Trabalhe nesta pasta e preserve as alterações existentes.
+> `iniciar`: esta é a cópia local da matriz para uma nova loja independente. Trabalhe nesta pasta e preserve as alterações existentes. Leia `.agents/skills/construir-loja-completa/SKILL.md` e as instruções locais; não baixe outra matriz nem rode o helper CLI `iniciar`.
 >
-> Leia primeiro as instruções e a documentação do projeto. Confira o estado local e faça somente as perguntas faltantes sobre contas, loja, produto, identidade, preços, entrega, atendimento e integrações.
+> Faça inventário da pasta inteira, leia regras, estado e relatório, confira Git/remoto e alterações, e revise arquivos fonte, configuração, testes, mídias e dependências antes de executar scripts. Pergunte somente os dados que faltarem.
 >
-> Cada loja terá novos cadastros de GitHub, Cloudflare, Umbrella, Resend e Meta, com domínio, banco e configurações próprios. Não reutilize credenciais ou dados de clientes de outra operação.
+> Preserve produto Escova Modeladora GOKOCO, R$ 37,90, cores, fotos, layout, avaliações e vídeos já aprovados; a reentrega opcional custa R$ 10,00. Mantenha o frete inicial e não confunda as duas taxas. Apague/substitua todos os dados da operação de origem: nome empresarial/pessoal, CNPJ, contatos, domínio, IDs, produtos Umbrella, banco, webhook, Pixel e credenciais.
 >
-> Preserve a estrutura interna, personalize a nova loja e prepare uma prévia. Após definir o nome, crie o repositório independente na nova conta GitHub. Não envie alterações para a matriz.
+> Confira contas e permissões. Crie produto(s) na Umbrella da nova loja por API oficial se a conta e API permitirem; primeiro liste e compare para evitar duplicatas. Produto principal R$ 37,90; produto de reentrega R$ 10,00 se a conta exigir esse cadastro. Confira a resposta e guarde somente os IDs não secretos na configuração. Configure novas contas Cloudflare, GitHub, Resend e Meta. Liste zonas existentes da conta Cloudflare; use uma zona que a pessoa controla. Pages pode usar `*.pages.dev`, mas o e-mail de produção exige domínio remetente próprio verificado no Resend. Se faltar domínio/conta/API, registre pendência e continue as partes locais; não compre domínio, não invente dados e não declare integração concluída.
 >
-> Teste e documente antes de publicar, respeitando a autorização dada. Comece pela leitura e pelo levantamento.
+> Recrie D1 usando o schema SQL incluído no Worker e documentado nesta matriz, sem baixar SQL externo. Mantenha Meta desativada até receber credenciais e validar Pixel/API próprios. Prepare prévia, teste, documente e publique apenas para o repositório novo autorizado; nunca envie alterações para a matriz.
 
-## Skill opcional
+## Início mínimo
 
-Se a skill privada já estiver instalada, acrescente antes do texto:
-
-> Use a skill `$construir-loja-completa`.
-
-A skill não está incluída nem é instalada por este repositório. Sua ausência não impede o uso das instruções da matriz.
+Como `AGENTS.md` encaminha ao fluxo completo e a skill já viaja com esta pasta, `iniciar` é suficiente. O texto acima pode ser usado se o agente não reconhecer a palavra curta.
 
 ## Continuação de loja existente
 

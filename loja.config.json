@@ -8,29 +8,51 @@
     "emailRemetente": null
   },
   "produto": {
-    "nome": null,
-    "marca": null,
+    "nome": "Escova Modeladora GOKOCO",
+    "marca": "GOKOCO",
     "produtoUmbrellaId": null,
-    "precoCentavos": null,
-    "variantes": [],
-    "fotos": [],
+    "precoCentavos": 3790,
+    "variantes": [
+      { "nome": "Preta", "imagem": "/assets/escova-preta.webp" },
+      { "nome": "Branca", "imagem": "/assets/escova-branca.webp" },
+      { "nome": "Rosa", "imagem": "/assets/escova-rosa.webp" }
+    ],
+    "fotos": [
+      "/assets/escova-detalhe-01.webp",
+      "/assets/escova-detalhe-02.webp",
+      "/assets/escova-detalhe-03.webp",
+      "/assets/escova-detalhe-04.webp",
+      "/assets/escova-detalhe-05.webp",
+      "/assets/escova-detalhe-06.webp",
+      "/assets/escova-detalhe-07.webp",
+      "/assets/escova-detalhe-08.webp",
+      "/assets/escova-detalhe-09.webp",
+      "/assets/escova-detalhe-10.webp"
+    ],
     "descricao": null
   },
   "oferta": {
     "descontoPercentual": null,
     "quantidadeMinima": null,
-    "frete": [],
-    "prazoDias": null,
+    "frete": [
+      { "id": "free", "nome": "Frete grátis", "feeCentavos": 0 },
+      { "id": "jadlog", "nome": "Jadlog", "feeCentavos": 1847 },
+      { "id": "sedex", "nome": "SEDEX", "feeCentavos": 3340 }
+    ],
+    "taxaReentregaCentavos": 1000,
+    "prazoDias": 15,
     "garantia": null,
     "trocas": null
   },
   "identidade": {
     "logo": "/assets/logo-tiktok-shop.png",
-    "corPrincipal": null,
-    "corSecundaria": null
+    "corPrincipal": "#fe2c55",
+    "corSecundaria": "#161823"
   },
   "conteudo": {
-    "depoimentosReais": [],
+    "usarFeedbacksDaMatriz": true,
+    "usarVideosDaMatriz": true,
+    "depoimentosAdicionais": [],
     "autorizacaoUsoMidias": true
   },
   "servicos": {

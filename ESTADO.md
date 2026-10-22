@@ -4,11 +4,11 @@
 - Tipo: modelo privado independente; conteúdo de exemplo.
 - Vendas, pagamento, rastreio e painel: arquivos incluídos.
 - Credenciais reais: nenhuma copiada.
-- Produto Umbrella: placeholder `produto-exemplo`.
+- Produto Umbrella: ainda precisa ser criado/confirmado na nova conta; produto-base Escova Modeladora GOKOCO, R$ 37,90.
 - Cloudflare Pages e D1: nenhum recurso de produção conectado.
 - Administrador e remetente: não configurados.
 - Modo: `template`; operações reais bloqueadas.
-- Repositório privado criado e marcado como template: `omarceloblack-ui/modelo-estrutura-outubro-tiktokshop`.
+- Repositório matriz privado e marcado como template.
 - Testes locais: 20 aprovados; recursos e scripts conferidos.
 - Próximo passo: usar o prompt e completar os checklists.
 
@@ -18,13 +18,13 @@ Atualize este arquivo após cada etapa. Não registrar chaves, cookies, códigos
 
 ## Oferta atual
 
-Bloco Black Friday e desconto por quantidade removidos. Todas as unidades usam o preço base de exemplo; modo template preservado.
+Bloco promocional e desconto por quantidade removidos. Todas as unidades usam o preço-base R$ 37,90; modo template preservado.
 
 ## Sincronização visual — 18/10/2026
 
 Visual e navegação da loja de referência incorporados: oferta com título centralizado, cinco estrelas, aviso promocional único, feedbacks, seleção de cores com tags e botões rosas pulsantes, voltagem fixa informativa, checkout com etapas antes do carrinho, frete grátis desde a identificação e Sedex na entrega, rodapé claro sem caixas brancas e ícones alinhados. Localização aproximada por cidade via Cloudflare incluída.
 
-Identidade neutra, CNPJ/WhatsApp a configurar, e-mail fictício e preço de exemplo R$ 37,90 preservados. Nenhuma integração de produção foi copiada. Matriz permanece somente no GitHub, sem deploy Cloudflare.
+Identidade neutra, identificação comercial e contatos a configurar, e-mail fictício e preço-base R$ 37,90 preservados. Nenhuma integração de produção foi copiada. Matriz permanece somente no GitHub, sem deploy Cloudflare.
 
 ## Rastreamento pré-configurado — 19/10/2026
 
@@ -55,3 +55,7 @@ O bloco de avaliações foi sincronizado com a página de referência: 19 feedba
 ## Logo e texto de entrega — 22/10/2026
 
 Logo TikTok Shop copiada da loja local para `dist/assets/logo-tiktok-shop.png` e aplicada nos cabeçalhos, checkout, rodapé, frete grátis e favicon; configuração e instruções da matriz registram que essa logo deve permanecer fixa. Removida do produto e do checkout a mensagem longa sobre três tentativas de entrega. Regras operacionais continuam documentadas em OPERACAO.md.
+
+## Início autocontido da matriz — 22/10/2026
+
+A pasta inclui a skill completa em .agents/skills/construir-loja-completa/; o comando de conversa iniciar usa instruções locais e analisa a pasta sem baixar skill ou matriz. Produto-base fixado em Escova Modeladora GOKOCO/R$ 37,90, variantes/fotos, layout, TikTok Shop, 19 feedbacks e quatro vídeos; reentrega R$ 10,00 separada do frete inicial. Loja nova será uma pasta irmã sem .git/segredos, com GitHub privado e recursos de contas novas. Instruções listam produtos Umbrella antes de criar, identificam zonas Cloudflare, documentam a limitação de domínio para e-mail Resend, recriam D1 pelo schema no Worker e criam Pixel novo sem copiar dados da origem. Removidas do código de e-mail a marca pessoal e do fallback de entrega o telefone de origem. Sem criar contas/recursos ou publicar loja de produção nesta alteração.

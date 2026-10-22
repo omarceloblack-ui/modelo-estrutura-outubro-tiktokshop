@@ -1,0 +1,19 @@
+{
+  "versao": 1,
+  "fase": "briefing",
+  "origem": {},
+  "decisoes": {},
+  "pendencias": [],
+  "evidencias": [],
+  "validacoes": {
+    "briefingAprovado": false,
+    "conteudoRevisado": false,
+    "privacidadeRevisada": false,
+    "testesLocais": false,
+    "servicosConferidos": false,
+    "emailRecebido": false,
+    "pagamentoRealHomologado": false,
+    "publicacaoConferida": false
+  },
+  "proximoPasso": "Ler as instruções da matriz e levantar somente os dados ausentes do briefing."
+}

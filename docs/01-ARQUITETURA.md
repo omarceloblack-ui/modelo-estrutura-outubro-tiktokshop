@@ -10,7 +10,7 @@ Fluxo: variantes → dados e endereço → validação no servidor → Pix Umbre
 
 Navegador não determina valor, pagamento ou autorização administrativa. Rastreamento público não deve expor CPF, e-mail ou telefone. O código longo funciona como link privado; não divulgar links de clientes em demonstrações.
 
-D1: `payment_attempts`, `orders`, `order_events`, `order_map_points`, `order_emails`, `admin_challenges`, `admin_rate`. Dados pessoais e outbox são criptografados. A chave deriva do segredo Umbrella: rotacioná-lo exige migração dos dados e revisão de tokens/sessões.
+D1: `payment_attempts`, `orders`, `order_events`, `order_map_points`, `order_emails`, `admin_challenges`, `admin_rate` e tabelas operacionais adicionais. O schema SQL está incluído como statements de inicialização em `dist/_worker.js`; não há download SQL separado. Dados pessoais e outbox são criptografados. A chave deriva do segredo Umbrella: rotacioná-lo exige migração dos dados e revisão de tokens/sessões.
 
 ## Mapa de alterações para outro produto
 
