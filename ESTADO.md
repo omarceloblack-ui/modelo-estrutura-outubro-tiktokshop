@@ -47,3 +47,7 @@ Fluxo padrão atualizado: usuário baixa a matriz e abre a pasta exclusiva; brie
 ## Prompt confirmado — 20/10/2026
 
 PROMPT-INICIAL.md alinhado ao texto final confirmado pelo usuário. Instruções distinguem nova loja e retomada; skill opcional, sem instalação pelo repositório. Somente documentação alterada, sem modificação da operação.
+
+## Feedbacks e vídeos sincronizados — 22/10/2026
+
+O bloco de avaliações foi sincronizado com a página de referência: 19 feedbacks de clientes, nota 4,6 com 722 avaliações e quatro vídeos de depoimento. Os textos, nomes, dados visuais, imagens, avatares, miniaturas e vídeos são o conjunto autorizado da matriz e das cópias derivadas; reutilização sem confirmação adicional. Os assets referenciados já existem em dist/assets e correspondem à pasta local da Escova Modeladora.

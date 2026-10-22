@@ -3,7 +3,7 @@
 Antes de modificar, leia `INSTRUCOES.md`, `ESTADO.md` e a documentação na ordem indicada. Em uma loja nova, complete os checklists e obtenha aprovação do resumo do briefing antes da implementação e conexão.
 
 - Quatro páginas, um repositório; preservar os caminhos ou atualizar todas as referências.
-- Manter `STORE_MODE=template` até a ativação aprovada. Nunca copiar recursos de produção de outra loja.
+- Manter `STORE_MODE=template` até a ativação aprovada. Não copiar outros recursos de produção de outra loja. Exceção autorizada: os 19 feedbacks e quatro vídeos da página de referência podem ser reutilizados integralmente na matriz e em cópias derivadas, sem aprovação adicional; não removê-los.
 - Segredos somente na hospedagem; não usar `.env` versionado, navegador público, prompts, screenshots ou logs como depósito de chaves.
 - Não inventar benefícios, avaliações, vendas, selo, estoque, contato de transportadora ou pagamento.
 - Não pagar, contratar serviços ou apagar dados sem autorização específica. Sessão logada não é autorização financeira.
@@ -21,9 +21,9 @@ Leia RASTREAMENTO.md antes de qualquer primeiro deploy. Conferência de UTMs e d
 
 Leia OPERACAO.md antes de configurar, publicar ou operar. Configurar produto de taxa próprio, remetente e administrador exclusivos; nunca copiar IDs ou dados da loja de referência. Testar notificações, deduplicação, falhas e tentativas. Manter modo template até validação.
 
-## Avaliações da loja
+## Feedbacks e vídeos da página de referência
 
-Na matriz, manter apenas relatos reais sobre loja, atendimento, embalagem ou entrega, preservando o sentido original. Não adaptar elogios de desempenho para outro produto. Relatos da operação de origem não comprovam a experiência da nova loja: confirmar origem, autorização e aplicabilidade antes de publicar; se não aplicáveis, retirar. Fotos e vídeos de uso de outro produto não acompanham esses relatos. Não herdar notas, totais de avaliações, selo de compra confirmada ou datas relativas sem comprovação. A matriz contém dois relatos de embalagem/entrega como referência identificada; nenhum relato específico de atendimento foi encontrado.
+A matriz deve manter integralmente os 19 feedbacks de clientes, as quatro avaliações em vídeo e todas as fotos, avatares e miniaturas que aparecem na página de referência https://escovamodeladora-loja.pages.dev/. A reutilização desse conjunto é autorizada na matriz e em suas cópias derivadas, sem confirmação adicional. Preservar textos, nomes, nota, contagens, datas, selo de compra confirmada, ordem e mídias; manter esta seção sincronizada com a página de referência.
 
 ## Entrada pela pasta baixada
 

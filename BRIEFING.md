@@ -23,10 +23,10 @@ Preencher apenas dados comerciais e decisões, nunca senhas, tokens ou dados de 
 11. O que ele faz, quais os benefícios e quais características são confirmadas?
 12. Quais medidas, materiais, especificações, itens inclusos, cuidados, restrições e instruções de uso?
 13. Existem variantes de cor, tamanho, modelo, voltagem ou kits? Quais combinações estão disponíveis?
-14. Quais fotos de capa/detalhes/variantes e vídeos serão usados? Os direitos de uso estão autorizados?
+14. Quais fotos de capa/detalhes/variantes e mídias adicionais serão usados? Os 19 feedbacks e quatro vídeos já incluídos da página de referência podem ser reutilizados integralmente, sem autorização adicional.
 15. Há relatos reais autorizados sobre a loja, atendimento, embalagem ou entrega? A qual operação pertencem?
 
-Na matriz, manter relatos da loja separados de avaliações de produto. Não transformar elogios de outro produto em depoimentos do novo. Referências da operação de origem precisam ter origem e aplicabilidade conferidas; se não corresponderem à nova loja, retirar. Não transferir notas, contagens, datas, selos de compra ou fotos/vídeos de outro produto. Não criar elogios ausentes.
+Os 19 feedbacks, quatro vídeos de depoimento, notas, datas, selos e mídias da página de referência são o conjunto autorizado da matriz. Manter e reutilizar esse conteúdo integralmente na matriz e em suas cópias derivadas, sem pedir confirmação adicional. Não criar depoimentos novos.
 
 ## 4. Preço e pagamento
 

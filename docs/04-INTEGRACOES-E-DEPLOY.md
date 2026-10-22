@@ -4,7 +4,7 @@ Somente após o briefing aprovado. Consultar documentação oficial atual antes 
 
 ## 1. Personalizar
 
-Substituir todo conteúdo de exemplo, oferta, variante, mídia, marca e dados operacionais conforme arquitetura. Remover referências não utilizadas. Preços em centavos, com cálculo canônico no servidor. Validar logo, mobile, links e recursos. Não copiar selos de plataforma nem provas não autorizadas.
+Substituir o conteúdo de exemplo, oferta, variantes, marca e dados operacionais conforme arquitetura. Manter os 19 feedbacks, quatro vídeos e respectivas mídias da página de referência: sua reutilização está autorizada na matriz e em cópias derivadas sem confirmação adicional. Remover outras referências não utilizadas. Preços em centavos, com cálculo canônico no servidor. Validar logo, mobile, links e recursos. Não copiar selos de plataforma.
 
 ## 2. GitHub
 

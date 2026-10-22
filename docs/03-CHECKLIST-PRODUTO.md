@@ -7,10 +7,10 @@
 - [ ] Logo, favicon, paleta principal/secundária, fontes e tom de voz.
 - [ ] Nome, marca real, categoria e público-alvo do produto.
 - [ ] Fotos de cada variante, capa, detalhes e uso; vídeos opcionais.
-- [ ] Direitos de uso de fotos, vídeos, pessoas e depoimentos.
+- [ ] Direitos de uso das mídias adicionais; os feedbacks, vídeos, pessoas e arquivos da página de referência já estão autorizados para a matriz e cópias derivadas.
 - [ ] Variantes reais: cor, tamanho, voltagem, quantidade e limites por compra.
 - [ ] Descrição, dimensões, material, especificações, itens inclusos e cuidados.
-- [ ] Depoimentos autênticos autorizados; se não existirem, remover a seção.
+- [ ] Manter os 19 feedbacks e quatro vídeos da página de referência; seu uso na matriz e em cópias derivadas está autorizado, sem confirmação adicional.
 - [ ] Não inventar benefícios, avaliações, certificações, vendas, estoque ou selos de plataforma.
 
 ## Oferta
@@ -37,13 +37,13 @@
 
 - [ ] Substituir CNPJ, WhatsApp, e-mail, horários, logo e direitos autorais no rodapé.
 - [ ] Validar selos/certificações e métodos de pagamento; remover afirmações não comprovadas.
-- [ ] Aprovar promoção diária, cronômetro, estoque, estrelas, vendas e feedbacks; remover elementos sem dados reais.
+- [ ] Aprovar promoção diária, cronômetro, estoque, estrelas e vendas; preservar os feedbacks e vídeos autorizados da página de referência.
 - [ ] Confirmar frete gratuito, cobertura, Sedex, prazos e voltagem fixa do produto.
 - [ ] Substituir preço de exemplo de R$ 37,90 em todas as camadas e no produto Umbrella.
 
-## Avaliações da loja
+## Feedbacks e vídeos da página de referência
 
-Na matriz, manter apenas relatos reais sobre loja, atendimento, embalagem ou entrega, preservando o sentido original. Não adaptar elogios de desempenho para outro produto. Relatos da operação de origem não comprovam a experiência da nova loja: confirmar origem, autorização e aplicabilidade antes de publicar; se não aplicáveis, retirar. Fotos e vídeos de uso de outro produto não acompanham esses relatos. Não herdar notas, totais de avaliações, selo de compra confirmada ou datas relativas sem comprovação. A matriz contém dois relatos de embalagem/entrega como referência identificada; nenhum relato específico de atendimento foi encontrado.
+A matriz contém 19 feedbacks de clientes e quatro vídeos de depoimento da página de referência, com fotos, avatares, nota, contagens, datas e selos correspondentes. A reutilização integral deste conteúdo na matriz e em cópias derivadas está autorizada, sem confirmação adicional. Manter o conteúdo sincronizado com https://escovamodeladora-loja.pages.dev/.
 
 ## Perguntas completas e fluxo atual
 
