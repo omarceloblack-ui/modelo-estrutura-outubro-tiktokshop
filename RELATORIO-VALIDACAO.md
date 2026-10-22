@@ -69,3 +69,7 @@ INICIO-RAPIDO.md e BRIEFING.md adicionados; README, prompt, ordem de leitura e c
 
 Texto final aprovado incorporado ao PROMPT-INICIAL.md, com invocação opcional da skill e orientação de retomada. README e início rápido alinhados. Alteração somente documental; 38 testes simulados e npm run check aprovados (22 scripts). Sem cobrança, envio real de e-mail ou deploy Cloudflare.
 
+
+## Feedbacks e vídeos sincronizados — 22/10/2026
+
+Conferidos os blocos no projeto local Escova Modeladora e na página publicada; os dois blocos são idênticos. A matriz agora contém os 19 feedbacks e quatro vídeos de depoimento com os mesmos textos, ordem, nomes, nota, contagem, datas, selos, fotos, avatares e miniaturas. Os 41 arquivos de mídia referenciados já estavam na matriz e seus SHA-256 correspondem aos arquivos locais da loja. Regras da matriz e checklist atualizados para autorizar a reutilização integral, sem confirmação adicional. Validação limitada a comparação textual, estrutura e hashes; não houve testes de aplicação nem publicação Cloudflare.

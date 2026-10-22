@@ -2,7 +2,7 @@
 
 Base independente para criar uma nova loja em um repositório privado. Nenhuma conta, credencial, banco ou pedido da loja anterior está conectado.
 
-Comece por [INICIO-RAPIDO.md](INICIO-RAPIDO.md), responda ao [BRIEFING.md](BRIEFING.md) e use [PROMPT-INICIAL.md](PROMPT-INICIAL.md). As regras e a ordem técnica estão em [INSTRUCOES.md](INSTRUCOES.md). O exemplo de escova, preço, cores, oferta e mídia é demonstrativo. Deve ser substituído e aprovado para cada produto.
+Comece por [INICIO-RAPIDO.md](INICIO-RAPIDO.md), responda ao [BRIEFING.md](BRIEFING.md) e use [PROMPT-INICIAL.md](PROMPT-INICIAL.md). As regras e a ordem técnica estão em [INSTRUCOES.md](INSTRUCOES.md). O produto, preço, cores e oferta de demonstração devem ser revisados para cada loja. Os 19 feedbacks e quatro vídeos da página de referência são conteúdo autorizado da matriz e podem ser reutilizados integralmente, sem aprovação adicional.
 
 | Página | Arquivo | Endereço |
 |---|---|---|
