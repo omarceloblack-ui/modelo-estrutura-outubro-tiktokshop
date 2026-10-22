@@ -13,7 +13,7 @@ Preencher apenas dados comerciais e decisões, nunca senhas, tokens ou dados de 
 ## 2. Identidade
 
 6. Qual será o nome da loja e o domínio? Qual nome deseja para pasta, repositório e hospedagem?
-7. Já tem logo e favicon ou precisa criá-los? Quais arquivos estão autorizados?
+7. A logo TikTok Shop e o favicon da matriz são fixos. Informe somente se houver identidade visual adicional para o nome da loja.
 8. Quais cores principais e dos botões, fontes, tom de voz e referências visuais deseja?
 9. Qual nome empresarial, CNPJ e identificação comercial devem aparecer?
 

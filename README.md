@@ -40,3 +40,6 @@ Consulte OPERACAO.md para o fluxo completo: cinco etapas confirmadas, e-mail aut
 ## Prompt e retomada
 
 O [prompt inicial](PROMPT-INICIAL.md) contém o texto aprovado para iniciar cada nova loja e uma opção curta para retomar uma loja existente. Funciona sem skill instalada; a invocação da skill privada é opcional. A skill não faz parte deste repositório.
+# Logo permanente
+
+A matriz mantém a logo TikTok Shop em `dist/assets/logo-tiktok-shop.png` nos cabeçalhos, checkout, opção de frete grátis, rodapé e favicon. Essa logo é fixa; configure nome, cores e demais dados da loja sem substituir a marca TikTok Shop.

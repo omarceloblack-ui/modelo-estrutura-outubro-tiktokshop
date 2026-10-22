@@ -51,3 +51,7 @@ PROMPT-INICIAL.md alinhado ao texto final confirmado pelo usuário. Instruções
 ## Feedbacks e vídeos sincronizados — 22/10/2026
 
 O bloco de avaliações foi sincronizado com a página de referência: 19 feedbacks de clientes, nota 4,6 com 722 avaliações e quatro vídeos de depoimento. Os textos, nomes, dados visuais, imagens, avatares, miniaturas e vídeos são o conjunto autorizado da matriz e das cópias derivadas; reutilização sem confirmação adicional. Os assets referenciados já existem em dist/assets e correspondem à pasta local da Escova Modeladora.
+
+## Logo e texto de entrega — 22/10/2026
+
+Logo TikTok Shop copiada da loja local para `dist/assets/logo-tiktok-shop.png` e aplicada nos cabeçalhos, checkout, rodapé, frete grátis e favicon; configuração e instruções da matriz registram que essa logo deve permanecer fixa. Removida do produto e do checkout a mensagem longa sobre três tentativas de entrega. Regras operacionais continuam documentadas em OPERACAO.md.

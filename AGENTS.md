@@ -3,6 +3,7 @@
 Antes de modificar, leia `INSTRUCOES.md`, `ESTADO.md` e a documentação na ordem indicada. Em uma loja nova, complete os checklists e obtenha aprovação do resumo do briefing antes da implementação e conexão.
 
 - Quatro páginas, um repositório; preservar os caminhos ou atualizar todas as referências.
+- Manter permanentemente a logo TikTok Shop de `dist/assets/logo-tiktok-shop.png` no cabeçalho, etapas de checkout, opção de frete grátis, rodapé e favicon de todas as páginas. Não substituir pela marca configurável da loja.
 - Manter `STORE_MODE=template` até a ativação aprovada. Não copiar outros recursos de produção de outra loja. Exceção autorizada: os 19 feedbacks e quatro vídeos da página de referência podem ser reutilizados integralmente na matriz e em cópias derivadas, sem aprovação adicional; não removê-los.
 - Segredos somente na hospedagem; não usar `.env` versionado, navegador público, prompts, screenshots ou logs como depósito de chaves.
 - Não inventar benefícios, avaliações, vendas, selo, estoque, contato de transportadora ou pagamento.

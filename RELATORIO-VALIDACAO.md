@@ -2,6 +2,10 @@
 
 ## Verificado localmente
 
+- Logo TikTok Shop presente nas quatro páginas, no checkout, no rodapé, na opção de frete grátis e no favicon; arquivo conferido contra o asset da loja local.
+- Mensagem longa sobre três tentativas de entrega removida das interfaces de produto e checkout; instruções operacionais permanecem na documentação.
+- `npm test`: 38 aprovados; `npm run check`: scripts e recursos locais válidos. Referências ao arquivo da logo conferidas localmente.
+
 - Quatro arquivos HTML presentes, scripts e recursos locais conferidos.
 - Testes de servidor e mapa com dados fictícios e serviços simulados.
 - Teste específico comprova que a matriz bloqueia operações reais mesmo com uma chave recebida por engano.
@@ -73,3 +77,7 @@ Texto final aprovado incorporado ao PROMPT-INICIAL.md, com invocação opcional 
 ## Feedbacks e vídeos sincronizados — 22/10/2026
 
 Conferidos os blocos no projeto local Escova Modeladora e na página publicada; os dois blocos são idênticos. A matriz agora contém os 19 feedbacks e quatro vídeos de depoimento com os mesmos textos, ordem, nomes, nota, contagem, datas, selos, fotos, avatares e miniaturas. Os 41 arquivos de mídia referenciados já estavam na matriz e seus SHA-256 correspondem aos arquivos locais da loja. Regras da matriz e checklist atualizados para autorizar a reutilização integral, sem confirmação adicional. Validação limitada a comparação textual, estrutura e hashes; não houve testes de aplicação nem publicação Cloudflare.
+
+## Verificação completa e publicação — 22/10/2026
+
+Testes simulados repetidos: 38/38 aprovados; npm run check: 22 scripts e recursos válidos. Inclui compra Pix fictícia, rastreio, painel, notificações e reentrega. Sem cobrança ou operação de pedido real. Referências antigas de marca removidas da pasta principal da loja; matriz usa a logo permanente TikTok Shop. Revisão estática do pacote fonte da loja não encontrou execução automática suspeita. Não equivale a análise antivírus.

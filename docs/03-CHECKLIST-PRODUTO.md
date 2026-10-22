@@ -4,7 +4,7 @@
 
 - [ ] Nome da loja, canal real de contato e identificação comercial aplicável.
 - [ ] Nome da pasta/repositório/projeto e endereço desejado.
-- [ ] Logo, favicon, paleta principal/secundária, fontes e tom de voz.
+- [x] Logo TikTok Shop e favicon fixos em todas as páginas. Definir paleta, fontes e tom de voz da loja sem substituir essa logo.
 - [ ] Nome, marca real, categoria e público-alvo do produto.
 - [ ] Fotos de cada variante, capa, detalhes e uso; vídeos opcionais.
 - [ ] Direitos de uso das mídias adicionais; os feedbacks, vídeos, pessoas e arquivos da página de referência já estão autorizados para a matriz e cópias derivadas.
@@ -35,7 +35,7 @@
 
 ## Conferir ao reutilizar o visual
 
-- [ ] Substituir CNPJ, WhatsApp, e-mail, horários, logo e direitos autorais no rodapé.
+- [ ] Substituir CNPJ, WhatsApp, e-mail, horários e direitos autorais no rodapé; preservar a logo TikTok Shop.
 - [ ] Validar selos/certificações e métodos de pagamento; remover afirmações não comprovadas.
 - [ ] Aprovar promoção diária, cronômetro, estoque, estrelas e vendas; preservar os feedbacks e vídeos autorizados da página de referência.
 - [ ] Confirmar frete gratuito, cobertura, Sedex, prazos e voltagem fixa do produto.

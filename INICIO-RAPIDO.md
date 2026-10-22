@@ -4,7 +4,7 @@
 
 1. Baixe a matriz atual em https://github.com/omarceloblack-ui/modelo-estrutura-outubro-tiktokshop (acesso privado autorizado).
 2. Extraia em uma pasta exclusiva da nova loja. Abra essa pasta como projeto no Codex e inicie a conversa nela.
-3. Separe nome, produto, preço, logo, cores, imagens e vídeos. O nome pode ser decidido no briefing, antes de nomear o repositório e os recursos definitivos.
+3. Separe nome, produto, preço, cores, imagens e vídeos. A logo TikTok Shop da matriz permanece fixa em todas as páginas; não precisa fornecer outra. O nome pode ser decidido no briefing, antes de nomear o repositório e os recursos definitivos.
 4. Tenha contas próprias de GitHub, Cloudflare, Umbrella, Resend e Meta. Deixe as sessões conectadas no navegador disponível às ferramentas.
 5. Tenha domínio comprado, acesso ao DNS e caixa de e-mail administrativa ativa.
 
